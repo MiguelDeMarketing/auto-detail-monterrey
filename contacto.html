@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cotizar protección vehicular premium con Auto Detail Monterrey</title>
+  <meta name="description" content="¿Listo para proteger tu auto? Cotiza por WhatsApp o visítanos. Respondemos en menos de 24 horas. PPF, cerámica, wraps y accesorios 4x4.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== CSS Reset ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ===== Design Tokens ===== */
+    :root {
+      --black: #000000;
+      --red: #D43030;
+      --red-hover: #b82828;
+      --white: #FFFFFF;
+      --gray-100: #F5F5F5;
+      --gray-200: #E0E0E0;
+      --gray-300: #AAAAAA;
+      --gray-400: #888888;
+      --gray-700: #333333;
+      --gray-800: #1A1A1A;
+      --gray-900: #111111;
+      --card-bg: #111111;
+      --input-bg: #1A1A1A;
+      --input-border: #2A2A2A;
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Space Grotesk', sans-serif;
+      --max-width: 1200px;
+      --header-height: 80px;
+      --transition: 0.3s ease;
+    }
+
+    /* ===== Base ===== */
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    img { max-width: 100%; display: block; }
+    button, input, textarea, select { font-family: inherit; }
+
+    .container { width: 90%; max-width: var(--max-width); margin: 0 auto; }
+
+    /* ===== Animations ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .animate-up   { animation: fadeInUp 0.7s ease forwards; }
+    .animate-fade { animation: fadeIn 0.6s ease forwards; }
+    .delay-1 { animation-delay: 0.15s; opacity: 0; }
+    .delay-2 { animation-delay: 0.3s;  opacity: 0; }
+    .delay-3 { animation-delay: 0.45s; opacity: 0; }
+    .delay-4 { animation-delay: 0.6s;  opacity: 0; }
+
+    /* ===== Header ===== */
+    .header {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      height: var(--header-height);
+      transition: background var(--transition);
+    }
+    .header .container {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 100%;
+    }
+    .logo {
+      font-family: var(--font-heading);
+      font-weight: 800; font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+    .logo span { color: var(--red); }
+    .nav { display: flex; align-items: center; gap: 2rem; }
+    .nav a {
+      font-size: 0.9rem; font-weight: 500;
+      color: var(--gray-300);
+      transition: color var(--transition);
+      position: relative;
+    }
+    .nav a:hover, .nav a.active { color: var(--white); }
+    .nav a.active::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 100%; height: 2px; background: var(--red); border-radius: 1px;
+    }
+    .header-cta {
+      background: var(--red); color: var(--white);
+      padding: 0.6rem 1.4rem; border-radius: 6px;
+      font-size: 0.85rem; font-weight: 600;
+      transition: background var(--transition), transform var(--transition);
+      border: none; cursor: pointer;
+    }
+    .header-cta:hover { background: var(--red-hover); transform: translateY(-1px); }
+
+    /* Mobile menu toggle */
+    .menu-toggle {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .menu-toggle span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    /* ===== Hero / Contact Section ===== */
+    .contact-hero {
+      padding-top: calc(var(--header-height) + 4rem);
+      padding-bottom: 5rem;
+      background: var(--black);
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-hero::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(ellipse at 20% 50%, rgba(212,48,48,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+
+    /* Left: Info */
+    .contact-info h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+    .contact-info h1 .accent { color: var(--red); }
+    .contact-info .subtitle {
+      font-size: 1.05rem;
+      color: var(--gray-300);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      max-width: 480px;
+    }
+
+    .contact-items { display: flex; flex-direction: column; gap: 1.75rem; }
+    .contact-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .contact-item-icon {
+      flex-shrink: 0;
+      width: 48px; height: 48px;
+      background: var(--gray-900);
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .contact-item-icon svg { width: 22px; height: 22px; stroke: var(--red); fill: none; }
+    .contact-item-label {
+      font-size: 0.8rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--gray-400);
+      margin-bottom: 0.25rem;
+    }
+    .contact-item-value {
+      font-size: 1rem; color: var(--white); font-weight: 500;
+      line-height: 1.5;
+    }
+    .contact-item-value a { transition: color var(--transition); }
+    .contact-item-value a:hover { color: var(--red); }
+
+    /* Right: Form Card */
+    .form-card {
+      background: var(--card-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 16px;
+      padding: 2.5rem;
+    }
+    .form-card h2 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem; font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .form-card .form-sub {
+      color: var(--gray-400); font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label {
+      display: block; font-size: 0.82rem; font-weight: 600;
+      margin-bottom: 0.45rem; color: var(--gray-300);
+      letter-spacing: 0.02em;
+    }
+    .form-group label .required { color: var(--red); margin-left: 2px; }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      color: var(--white);
+      font-size: 0.95rem;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--gray-400); font-size: 0.9rem;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(212,48,48,0.15);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .form-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+
+    .btn-submit {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      width: 100%;
+      background: var(--red); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 0.9rem 1.6rem;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      margin-top: 0.5rem;
+    }
+    .btn-submit:hover {
+      background: var(--red-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(212,48,48,0.3);
+    }
+    .btn-submit svg { width: 18px; height: 18px; fill: var(--white); }
+
+    /* ===== CTA Banner ===== */
+    .cta-banner {
+      padding: 4rem 0;
+      background: var(--gray-900);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-banner::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(212,48,48,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-banner h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    .cta-banner p {
+      color: var(--gray-300); font-size: 1.05rem;
+      margin-bottom: 2rem; max-width: 520px; margin-inline: auto;
+    }
+    .cta-banner .btn-whatsapp {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: #25D366; color: var(--white);
+      padding: 0.85rem 2rem; border-radius: 8px;
+      font-size: 1rem; font-weight: 700;
+      transition: background var(--transition), transform var(--transition);
+      border: none; cursor: pointer;
+    }
+    .cta-banner .btn-whatsapp:hover {
+      background: #1fb855; transform: translateY(-2px);
+    }
+    .cta-banner .btn-whatsapp svg { width: 22px; height: 22px; fill: currentColor; }
+
+    /* ===== Footer ===== */
+    .footer {
+      background: var(--black);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 3rem 0 1.5rem;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .footer-brand .logo { margin-bottom: 1rem; }
+    .footer-brand p {
+      color: var(--gray-400); font-size: 0.9rem; line-height: 1.7;
+      max-width: 280px;
+    }
+    .footer-col h4 {
+      font-family: var(--font-heading);
+      font-size: 0.9rem; font-weight: 700;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--white);
+    }
+    .footer-col ul { display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-col a {
+      font-size: 0.88rem; color: var(--gray-400);
+      transition: color var(--transition);
+    }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-bottom p { color: var(--gray-400); font-size: 0.82rem; }
+    .footer-socials { display: flex; gap: 1rem; }
+    .footer-socials a {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; background: var(--gray-900);
+      border: 1px solid var(--input-border);
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .footer-socials a:hover { background: var(--red); border-color: var(--red); }
+    .footer-socials svg { width: 16px; height: 16px; fill: var(--white); }
+
+    /* ===== WhatsApp Float ===== */
+    .whatsapp-float {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      width: 60px; height: 60px;
+      background: #25D366; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: transform var(--transition), box-shadow var(--transition);
+      animation: fadeIn 1s ease 0.5s forwards; opacity: 0;
+    }
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 28px rgba(37,211,102,0.55);
+    }
+    .whatsapp-float svg { width: 30px; height: 30px; fill: var(--white); }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 960px) {
+      .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .footer-grid  { grid-template-columns: 1fr 1fr; }
+      .form-row     { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .menu-toggle { display: flex; }
+      .nav.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: var(--header-height); left: 0;
+        width: 100%; background: rgba(0,0,0,0.97);
+        padding: 1.5rem 5%; gap: 1.2rem;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    @media (max-width: 480px) {
+      .form-card { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo">AUTO DETAIL<span>MTY</span></a>
+      <nav class="nav" id="mainNav">
+        <a href="/">Inicio</a>
+        <a href="/servicios.html">Servicios</a>
+        <a href="/nosotros.html">Nosotros</a>
+        <a href="/galeria.html">Galeria</a>
+        <a href="/contacto.html" class="active">Contacto</a>
+        <a href="#cotizar" class="header-cta">Cotizar Ahora</a>
+      </nav>
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== Contact Hero ===== -->
+  <section class="contact-hero" id="cotizar">
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- Left: Info -->
+        <div class="contact-info animate-up">
+          <h1>Cotiza Tu Proyecto.<br><span class="accent">Te Respondemos Hoy.</span></h1>
+          <p class="subtitle">Cuentanos que necesita tu vehiculo para protegerlo con estetica premium. En menos de 24 horas tienes tu presupuesto detallado, sin compromiso.</p>
+
+          <div class="contact-items">
+            <!-- Correo -->
+            <div class="contact-item animate-up delay-1">
+              <div class="contact-item-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,4 12,13 2,4"/></svg>
+              </div>
+              <div>
+                <p class="contact-item-label">Correo</p>
+                <p class="contact-item-value"><a href="mailto:demo@yourweb.com">demo@yourweb.com</a></p>
+              </div>
+            </div>
+
+            <!-- Telefono -->
+            <div class="contact-item animate-up delay-2">
+              <div class="contact-item-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <div>
+                <p class="contact-item-label">Telefono</p>
+                <p class="contact-item-value"><a href="tel:+08002121234567">0800 (212) 123 45 67</a></p>
+              </div>
+            </div>
+
+            <!-- Direccion -->
+            <div class="contact-item animate-up delay-3">
+              <div class="contact-item-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <p class="contact-item-label">Direccion</p>
+                <p class="contact-item-value">P. Belinda 3000, Col 9,<br>66260 San Pedro Garza Garcia, N.L.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="form-card animate-up delay-2">
+          <h2>Solicita tu Cotizacion de Auto Detail</h2>
+          <p class="form-sub">Completa los datos y te contactamos pronto.</p>
+
+          <form id="contactForm" action="#" method="POST" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nombre">Nombre Completo</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan Perez" autocomplete="name">
+              </div>
+              <div class="form-group">
+                <label for="marca">Marca de Vehiculo</label>
+                <input type="text" id="marca" name="marca" placeholder="Ej. Toyota Tacoma 2024">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="telefono">Telefono</label>
+                <input type="tel" id="telefono" name="telefono" placeholder="Ej. 81 1234 5678" autocomplete="tel">
+              </div>
+              <div class="form-group">
+                <label for="correo">Correo <span class="required">*</span></label>
+                <input type="email" id="correo" name="correo" placeholder="Ej. tu@email.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="mensaje">Mensaje</label>
+              <textarea id="mensaje" name="mensaje" placeholder="Describe el servicio que necesitas: PPF, ceramica, wrap, accesorios 4x4..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+              Enviar Mensaje
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA Banner ===== -->
+  <section class="cta-banner">
+    <div class="container">
+      <h2>Prefiere respuesta inmediata?</h2>
+      <p>Escribenos directo por WhatsApp y recibe atencion personalizada al momento.</p>
+      <a href="https://wa.me/528112345678?text=Hola%2C%20quiero%20cotizar%20un%20servicio%20de%20Auto%20Detail" class="btn-whatsapp" target="_blank" rel="noopener">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.019-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        Chatear por WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">AUTO DETAIL<span>MTY</span></a>
+          <p>Proteccion vehicular premium en Monterrey. PPF, recubrimiento ceramico, wraps y accesorios 4x4.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Servicios</h4>
+          <ul>
+            <li><a href="/servicios.html#ppf">Paint Protection Film</a></li>
+            <li><a href="/servicios.html#ceramica">Recubrimiento Ceramico</a></li>
+            <li><a href="/servicios.html#wraps">Wraps</a></li>
+            <li><a href="/servicios.html#4x4">Accesorios 4x4</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Empresa</h4>
+          <ul>
+            <li><a href="/nosotros.html">Nosotros</a></li>
+            <li><a href="/galeria.html">Galeria</a></li>
+            <li><a href="/contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <ul>
+            <li><a href="mailto:demo@yourweb.com">demo@yourweb.com</a></li>
+            <li><a href="tel:+08002121234567">0800 (212) 123 45 67</a></li>
+            <li>San Pedro Garza Garcia, N.L.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Auto Detail Monterrey. Todos los derechos reservados.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="#" aria-label="TikTok">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== WhatsApp Float ===== -->
+  <a href="https://wa.me/528112345678?text=Hola%2C%20quiero%20cotizar%20un%20servicio%20de%20Auto%20Detail" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.019-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+  </a>
+
+  <!-- ===== JS ===== -->
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', () => {
+      mainNav.classList.toggle('open');
+    });
+
+    // Simple form validation feedback
+    const form = document.getElementById('contactForm');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const correo = document.getElementById('correo');
+      if (!correo.value || !correo.validity.valid) {
+        correo.focus();
+        correo.style.borderColor = 'var(--red)';
+        return;
+      }
+      // Replace with real submission logic
+      alert('Gracias por tu mensaje. Te contactaremos en menos de 24 horas.');
+      form.reset();
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polarizado de Autos en Monterrey | Auto Detail Monterrey</title>
+  <meta name="description" content="Polarizado nanoceramica con 99% de rechazo al calor y garantia de por vida. Protege tu piel, tu interior y tu auto. Instalacion certificada.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset ─────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ── Design Tokens ─────────────────────────────── */
+    :root {
+      --black: #000000;
+      --red: #D43030;
+      --dark: #0a0a0a;
+      --white: #ffffff;
+      --gray-100: #f5f5f5;
+      --gray-300: #d4d4d4;
+      --gray-500: #737373;
+      --gray-700: #404040;
+      --gray-900: #171717;
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'Space Grotesk', sans-serif;
+      --ease: cubic-bezier(.25,.46,.45,.94);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--dark);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    img, video { display: block; max-width: 100%; }
+
+    /* ── Utility ───────────────────────────────────── */
+    .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+
+    /* ── Reveal Animation ──────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .7s var(--ease), transform .7s var(--ease);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Header ────────────────────────────────────── */
+    .header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      background: rgba(10,10,10,.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      transition: background .3s;
+    }
+    .header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -.02em;
+      color: var(--white);
+    }
+    .logo span { color: var(--red); }
+
+    .nav { display: flex; align-items: center; gap: 2rem; }
+    .nav a {
+      font-family: var(--font-body);
+      font-size: .875rem;
+      font-weight: 500;
+      color: var(--gray-300);
+      transition: color .25s;
+      position: relative;
+    }
+    .nav a:hover,
+    .nav a.active { color: var(--white); }
+    .nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 0;
+      height: 2px;
+      background: var(--red);
+      border-radius: 1px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: .875rem;
+      padding: .75rem 1.75rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: transform .2s var(--ease), box-shadow .2s var(--ease), background .25s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red {
+      background: var(--red);
+      color: var(--white);
+      box-shadow: 0 4px 20px rgba(212,48,48,.35);
+    }
+    .btn-red:hover { box-shadow: 0 6px 28px rgba(212,48,48,.5); }
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 1.5px solid rgba(255,255,255,.2);
+    }
+    .btn-outline:hover { border-color: var(--red); color: var(--red); }
+
+    /* Mobile toggle */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: .3s;
+    }
+
+    /* ── Hero ──────────────────────────────────────── */
+    .hero {
+      padding: 10rem 0 4rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(212,48,48,.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--font-body);
+      font-size: .75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--red);
+      margin-bottom: 1.25rem;
+    }
+    .hero-label::before {
+      content: '';
+      width: 28px; height: 2px;
+      background: var(--red);
+      border-radius: 1px;
+    }
+
+    .hero h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -.03em;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    .hero h5 {
+      font-family: var(--font-body);
+      font-size: 1.125rem;
+      font-weight: 400;
+      color: var(--gray-300);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      max-width: 480px;
+    }
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* Video area */
+    .hero-media {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 16/10;
+      background: var(--gray-900);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .hero-media video,
+    .hero-media img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .play-btn {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.4);
+      transition: background .3s;
+      cursor: pointer;
+    }
+    .play-btn:hover { background: rgba(0,0,0,.25); }
+    .play-btn svg {
+      width: 64px; height: 64px;
+      fill: var(--white);
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,.5));
+      transition: transform .3s var(--ease);
+    }
+    .play-btn:hover svg { transform: scale(1.1); }
+
+    /* Features strip */
+    .hero-features {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+      padding-top: 3rem;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .feature-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.5rem;
+      border-radius: 12px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      transition: border-color .3s, background .3s;
+    }
+    .feature-card:hover {
+      border-color: rgba(212,48,48,.3);
+      background: rgba(255,255,255,.05);
+    }
+    .feature-icon {
+      flex-shrink: 0;
+      width: 44px; height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: rgba(212,48,48,.12);
+    }
+    .feature-icon svg { width: 22px; height: 22px; stroke: var(--red); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .feature-card h6 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: .25rem;
+    }
+    .feature-card p {
+      font-size: .875rem;
+      color: var(--gray-500);
+      line-height: 1.5;
+    }
+
+    /* ── CTA Banner ────────────────────────────────── */
+    .cta-banner {
+      padding: 5rem 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(212,48,48,.06) 50%, transparent 100%);
+      pointer-events: none;
+    }
+    .cta-banner h3 {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: .75rem;
+    }
+    .cta-banner p {
+      font-size: 1.0625rem;
+      color: var(--gray-300);
+      max-width: 540px;
+      margin: 0 auto 2rem;
+    }
+
+    /* ── Footer ────────────────────────────────────── */
+    .footer {
+      padding: 4rem 0 2rem;
+      border-top: 1px solid rgba(255,255,255,.06);
+      background: var(--black);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    .footer-col h6 {
+      font-family: var(--font-display);
+      font-size: .875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    .footer-col a,
+    .footer-col p {
+      display: block;
+      font-size: .875rem;
+      color: var(--gray-500);
+      margin-bottom: .5rem;
+      transition: color .25s;
+    }
+    .footer-col a:hover { color: var(--red); }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,.06);
+      font-size: .8125rem;
+      color: var(--gray-500);
+    }
+    .footer-socials { display: flex; gap: 1rem; }
+    .footer-socials a { transition: color .25s; }
+    .footer-socials a:hover { color: var(--red); }
+
+    /* ── WhatsApp Float ────────────────────────────── */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 1.5rem; right: 1.5rem;
+      z-index: 999;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: #25D366;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,.4);
+      transition: transform .3s var(--ease), box-shadow .3s;
+    }
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 28px rgba(37,211,102,.55);
+    }
+    .whatsapp-float svg { width: 32px; height: 32px; fill: var(--white); }
+
+    /* ── Responsive ────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .nav { gap: 1.25rem; }
+      .nav a { font-size: .8125rem; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-toggle { display: flex; }
+      .nav {
+        position: fixed;
+        top: 0; right: -100%;
+        width: 280px; height: 100vh;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 5rem 2rem 2rem;
+        background: var(--dark);
+        border-left: 1px solid rgba(255,255,255,.06);
+        transition: right .35s var(--ease);
+        gap: 1.25rem;
+      }
+      .nav.open { right: 0; }
+      .nav a { font-size: 1rem; }
+      .hero .container { grid-template-columns: 1fr; }
+      .hero-features { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════ Header ════════════════════════════════════ -->
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo">Auto Detail <span>MTY</span></a>
+
+      <nav class="nav" id="mainNav">
+        <a href="/ppf.html">PPF</a>
+        <a href="/ceramica.html">Cer&aacute;mica</a>
+        <a href="/wraps.html">Wraps</a>
+        <a href="/polarizados.html" class="active">Polarizado</a>
+        <a href="/accesorios-4x4.html">Accesorios 4&times;4</a>
+        <a href="/nosotros.html">Nosotros</a>
+        <a href="#contacto" class="btn btn-red">Contacto</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ════ Hero ══════════════════════════════════════ -->
+  <section class="hero">
+    <div class="container">
+
+      <!-- Left: Text -->
+      <div class="hero-text reveal">
+        <p class="hero-label">Polarizado Nanocer&aacute;mica</p>
+        <h2>Det&eacute;n el calor extremo</h2>
+        <h5>Polarizado Inteligente con 98% de rechazo infrarrojo en Monterrey.</h5>
+        <div class="hero-ctas">
+          <a href="https://wa.me/528134000957?text=Hola%2C%20quiero%20cotizar%20el%20polarizado%20para%20mi%20auto" class="btn btn-red">Cotizar</a>
+          <a href="#beneficios" class="btn btn-outline">Ver beneficios</a>
+        </div>
+      </div>
+
+      <!-- Right: Video/Image -->
+      <div class="hero-media reveal">
+        <!-- Replace src with your actual video or image -->
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#111 0%,#1a1a1a 100%);display:flex;align-items:center;justify-content:center;">
+          <span style="color:var(--gray-500);font-size:.875rem;">Video / Imagen Polarizado</span>
+        </div>
+        <a href="#" class="play-btn" aria-label="Reproducir video">
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="30" fill="none" stroke="white" stroke-width="2" opacity=".4"/>
+            <polygon points="26,20 46,32 26,44" fill="white"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Bottom: Features -->
+      <div class="hero-features" id="beneficios">
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <!-- Sun icon -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </div>
+          <div>
+            <h6>Protecci&oacute;n UV Total</h6>
+            <p>Bloquea el 99% de los rayos UV que da&ntilde;an tu piel y deterioran el interior de tu veh&iacute;culo.</p>
+          </div>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <!-- Check icon -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <div>
+            <h6>Claridad &Oacute;ptica Superior</h6>
+            <p>M&aacute;xima visibilidad d&iacute;a y noche. Tecnolog&iacute;a nanocer&aacute;mica sin interferencia de se&ntilde;al.</p>
+          </div>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <!-- Star icon -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <div>
+            <h6>Garant&iacute;a de Por Vida</h6>
+            <p>Respaldamos cada instalaci&oacute;n con garant&iacute;a de por vida contra burbujas, decoloraci&oacute;n y desprendimiento.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════ CTA Banner ════════════════════════════════ -->
+  <section class="cta-banner reveal" id="contacto">
+    <div class="container">
+      <h3>Protege tu auto del calor de Monterrey</h3>
+      <p>Solicita tu cotizaci&oacute;n sin compromiso y agenda tu cita de instalaci&oacute;n certificada.</p>
+      <a href="https://wa.me/528134000957?text=Hola%2C%20quiero%20cotizar%20el%20polarizado%20para%20mi%20auto" class="btn btn-red">Cotizar por WhatsApp</a>
+    </div>
+  </section>
+
+  <!-- ════ Footer ════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-col">
+          <h6>Servicios</h6>
+          <a href="/ppf.html">Paint Protection Film</a>
+          <a href="/ceramica.html">Recubrimiento Cer&aacute;mico</a>
+          <a href="/wraps.html">Wraps &amp; Vinyl</a>
+          <a href="/polarizados.html">Polarizado</a>
+          <a href="/accesorios-4x4.html">Accesorios 4&times;4</a>
+        </div>
+
+        <div class="footer-col">
+          <h6>Empresa</h6>
+          <a href="/nosotros.html">Nosotros</a>
+          <a href="#contacto">Contacto</a>
+          <a href="#">Blog</a>
+          <a href="#">Garant&iacute;as</a>
+        </div>
+
+        <div class="footer-col">
+          <h6>Contacto</h6>
+          <p>Monterrey, Nuevo Le&oacute;n, M&eacute;xico</p>
+          <p>Tel: (81) 3400 0957</p>
+          <a href="mailto:info@autodetailmty.com">info@autodetailmty.com</a>
+        </div>
+
+        <div class="footer-col">
+          <h6>Horario</h6>
+          <p>Lunes a Viernes: 9:00 &ndash; 18:00</p>
+          <p>S&aacute;bado: 9:00 &ndash; 14:00</p>
+          <p>Domingo: Cerrado</p>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 Auto Detail Monterrey. Todos los derechos reservados.</span>
+        <div class="footer-socials">
+          <a href="#" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" aria-label="TikTok">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ════ WhatsApp Float ════════════════════════════ -->
+  <a href="https://wa.me/528134000957?text=Hola%2C%20quiero%20cotizar%20el%20polarizado%20para%20mi%20auto" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16.004 0h-.008C7.174 0 0 7.176 0 16.004c0 3.5 1.128 6.744 3.046 9.378L1.054 31.29l6.118-1.958A15.907 15.907 0 0 0 16.004 32C24.826 32 32 24.826 32 16.004S24.826 0 16.004 0zm9.336 22.594c-.39 1.1-1.932 2.014-3.164 2.28-.844.18-1.946.322-5.656-1.216-4.746-1.966-7.804-6.78-8.038-7.094-.226-.314-1.886-2.512-1.886-4.79s1.194-3.4 1.618-3.866c.39-.428.924-.608 1.234-.608.15 0 .284.008.406.014.424.018.636.042.916.71.348.834 1.198 2.916 1.3 3.128.104.212.204.494.064.786-.13.3-.244.432-.456.678-.212.244-.414.432-.626.694-.194.226-.414.468-.178.916.236.446 1.052 1.736 2.26 2.814 1.554 1.386 2.864 1.816 3.272 2.016.408.2.646.168.884-.1.244-.274 1.05-1.22 1.33-1.64.274-.42.552-.348.928-.21.38.138 2.406 1.134 2.818 1.342.412.21.688.314.79.486.1.172.1.998-.29 2.098z"/>
+    </svg>
+  </a>
+
+  <!-- ════ Scripts ═══════════════════════════════════ -->
+  <script>
+    // Mobile nav toggle
+    const toggle = document.getElementById('navToggle');
+    const nav = document.getElementById('mainNav');
+    toggle.addEventListener('click', () => nav.classList.toggle('open'));
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FarmaGo — Prototipo Interactivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-dark: #1A5276;
+    --blue-main: #2B86C5;
+    --blue-light: #4BA3D9;
+    --blue-pale: #E8F4FD;
+    --blue-bg: #F0F7FC;
+    --orange-main: #F5921B;
+    --orange-light: #FDB44B;
+    --orange-pale: #FFF4E5;
+    --green: #27AE60;
+    --green-pale: #E8F8F0;
+    --red: #E74C3C;
+    --red-pale: #FDEDEC;
+    --yellow: #F1C40F;
+    --yellow-pale: #FEF9E7;
+    --gray-100: #F7F9FB;
+    --gray-200: #EDF1F5;
+    --gray-300: #D5DCE3;
+    --gray-400: #A0ADB8;
+    --gray-500: #6B7C8A;
+    --gray-600: #3D4F5F;
+    --gray-700: #1E2D3D;
+    --white: #FFFFFF;
+    --shadow-sm: 0 1px 3px rgba(26,82,118,0.08);
+    --shadow-md: 0 4px 12px rgba(26,82,118,0.1);
+    --shadow-lg: 0 8px 30px rgba(26,82,118,0.15);
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  body {
+    font-family:'DM Sans',sans-serif;
+    background:#1A2332;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:20px;
+  }
+
+  /* Phone frame */
+  .phone-frame {
+    width:390px; height:844px;
+    background:var(--white);
+    border-radius:44px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 0 0 3px #2A3A4A,0 0 0 6px #1A2332, 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .phone-frame::before {
+    content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:160px; height:34px; background:#1A2332; border-radius:0 0 20px 20px; z-index:200;
+  }
+
+  .screen {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.3s ease, transform 0.3s ease;
+    transform:translateX(20px);
+    overflow-y:auto; overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+  }
+  .screen::-webkit-scrollbar { display:none; }
+  .screen { -ms-overflow-style:none; scrollbar-width:none; }
+  .screen.active { opacity:1; pointer-events:all; transform:translateX(0); }
+
+  /* Shared components */
+  .status-bar {
+    height:54px; display:flex; align-items:flex-end; justify-content:space-between;
+    padding:0 28px 8px; font-size:14px; font-weight:600; color:var(--gray-700);
+    position:relative; z-index:50;
+  }
+  .status-bar.light { color:var(--white); }
+
+  .screen-back {
+    display:flex; align-items:center; gap:8px;
+    font-size:14px; font-weight:600; color:var(--blue-main);
+    cursor:pointer; background:none; border:none; font-family:inherit;
+  }
+  .screen-back:active { opacity:0.6; }
+  .screen-back.light { color:rgba(255,255,255,0.8); }
+
+  .screen-title {
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:22px; font-weight:800; color:var(--gray-700);
+  }
+
+  .scroll-pad { padding-bottom:100px; }
+
+  .bottom-nav {
+    position:absolute; bottom:0; left:0; right:0; height:82px;
+    background:var(--white); border-top:1px solid var(--gray-200);
+    display:flex; align-items:flex-start; justify-content:space-around;
+    padding-top:10px; z-index:150;
+  }
+  .bottom-nav.dark { background:rgba(14,58,92,0.97); border-top-color:rgba(255,255,255,0.1); backdrop-filter:blur(10px); }
+
+  .nav-item {
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    cursor:pointer; padding:4px 12px; transition:all 0.2s;
+  }
+  .nav-item:active { transform:scale(0.9); }
+  .nav-icon { font-size:22px; }
+  .nav-label { font-size:10px; font-weight:600; color:var(--gray-400); }
+  .nav-item.active .nav-label { color:var(--blue-main); }
+  .bottom-nav.dark .nav-label { color:rgba(255,255,255,0.5); }
+  .bottom-nav.dark .nav-item.active .nav-label { color:var(--orange-light); }
+
+  .btn-primary {
+    width:100%; padding:14px; background:var(--blue-main); color:white;
+    border:none; border-radius:12px; font-size:15px; font-weight:600;
+    font-family:inherit; cursor:pointer; transition:all 0.2s;
+  }
+  .btn-primary:active { background:var(--blue-dark); transform:scale(0.98); }
+  .btn-orange { background:var(--orange-main); }
+  .btn-orange:active { background:#D97D0F; }
+  .btn-outline {
+    width:100%; padding:14px; background:transparent;
+    border:2px solid var(--gray-300); border-radius:12px;
+    font-size:15px; font-weight:600; color:var(--gray-600);
+    font-family:inherit; cursor:pointer; transition:all 0.2s;
+  }
+  .btn-outline:active { background:var(--gray-100); }
+  .btn-sm { padding:10px 16px; width:auto; font-size:13px; border-radius:10px; }
+
+  .card {
+    background:var(--white); border-radius:var(--radius-md);
+    padding:16px; box-shadow:var(--shadow-sm); transition:all 0.2s;
+  }
+  .card:active { transform:scale(0.98); }
+
+  .badge-count {
+    position:absolute; top:12px; right:12px;
+    background:var(--red); color:white; font-size:11px; font-weight:700;
+    padding:3px 8px; border-radius:20px; min-width:22px; text-align:center;
+  }
+
+  /* Toast notification */
+  .toast {
+    position:fixed; top:60px; left:50%; transform:translateX(-50%) translateY(-100px);
+    background:var(--gray-700); color:white; padding:14px 24px;
+    border-radius:14px; font-size:14px; font-weight:600; z-index:9999;
+    box-shadow:0 8px 30px rgba(0,0,0,0.3); transition:transform 0.4s cubic-bezier(0.32,0.72,0,1);
+    display:flex; align-items:center; gap:10px; white-space:nowrap;
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+  .toast.success { background:var(--green); }
+  .toast.info { background:var(--blue-main); }
+
+  /* ==================== ROLE SELECT ==================== */
+  .role-screen { background:linear-gradient(160deg,var(--blue-main) 0%,var(--blue-dark) 50%,#0E3A5C 100%); }
+  .role-header { padding:66px 24px 10px; text-align:center; }
+  .role-logo { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:8px; }
+  .role-logo-pill {
+    width:48px; height:48px; background:linear-gradient(135deg,var(--orange-main),var(--orange-light));
+    border-radius:14px; display:flex; align-items:center; justify-content:center;
+    font-size:24px; box-shadow:0 4px 15px rgba(245,146,27,0.4);
+  }
+  .role-logo-text {
+    font-family:'Plus Jakarta Sans',sans-serif; font-size:28px; font-weight:800; color:white;
+  }
+  .role-logo-text span { color:var(--orange-light); }
+  .role-tagline { color:rgba(255,255,255,0.6); font-size:14px; margin-top:4px; }
+  .role-section-title {
+    color:rgba(255,255,255,0.5); font-size:12px; font-weight:600;
+    text-transform:uppercase; letter-spacing:1px; padding:24px 24px 12px;
+  }
+  .role-cards { padding:0 24px; display:flex; flex-direction:column; gap:12px; }
+  .role-card {
+    background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15);
+    border-radius:var(--radius-lg); padding:18px; display:flex; align-items:center;
+    gap:14px; cursor:pointer; transition:all 0.25s; backdrop-filter:blur(5px);
+  }
+  .role-card:active { background:rgba(255,255,255,0.2); transform:scale(0.97); }
+  .role-card-icon {
+    width:52px; height:52px; border-radius:14px; display:flex;
+    align-items:center; justify-content:center; font-size:26px; flex-shrink:0;
+  }
+  .role-card-icon.blue { background:rgba(43,134,197,0.3); }
+  .role-card-icon.orange { background:rgba(245,146,27,0.3); }
+  .role-card-icon.green { background:rgba(39,174,96,0.3); }
+  .role-card-icon.purple { background:rgba(155,89,182,0.3); }
+  .role-card-info { flex:1; }
+  .role-card-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; font-weight:700; color:white; }
+  .role-card-desc { font-size:12px; color:rgba(255,255,255,0.55); margin-top:2px; line-height:1.4; }
+  .role-card-arrow { color:rgba(255,255,255,0.4); font-size:18px; }
+
+  /* ==================== PATIENT HOME ==================== */
+  .patient-home { background:linear-gradient(160deg,var(--blue-main) 0%,var(--blue-dark) 40%,#0E3A5C 100%); }
+  .p-header { padding:62px 24px 16px; }
+  .p-greeting { font-size:14px; font-weight:500; color:rgba(255,255,255,0.6); }
+  .p-name { font-family:'Plus Jakarta Sans',sans-serif; font-size:24px; font-weight:800; color:white; margin-top:2px; }
+
+  .next-dose-banner {
+    margin:12px 24px 0; padding:16px 18px;
+    background:linear-gradient(135deg,var(--orange-main),#E8850F);
+    border-radius:var(--radius-md); color:white;
+    box-shadow:0 6px 20px rgba(245,146,27,0.35); cursor:pointer;
+  }
+  .next-dose-banner:active { transform:scale(0.98); }
+  .ndb-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; opacity:0.85; }
+  .ndb-med { font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:700; margin:4px 0 2px; }
+  .ndb-time { font-size:13px; opacity:0.9; }
+
+  .p-stats {
+    margin:14px 24px 0; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;
+  }
+  .p-stat {
+    background:rgba(255,255,255,0.1); border-radius:12px; padding:14px 10px;
+    text-align:center; border:1px solid rgba(255,255,255,0.1);
+  }
+  .p-stat-val { font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:800; color:white; }
+  .p-stat-label { font-size:10px; color:rgba(255,255,255,0.55); margin-top:2px; }
+
+  .p-section-title {
+    padding:20px 24px 10px;
+    font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:700; color:rgba(255,255,255,0.85);
+  }
+
+  .p-action-grid { padding:0 24px; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .p-action-card {
+    background:var(--white); border-radius:var(--radius-md); padding:18px 14px;
+    cursor:pointer; transition:all 0.2s; text-align:center;
+    box-shadow:var(--shadow-md);
+  }
+  .p-action-card:active { transform:scale(0.95); }
+  .p-action-icon { font-size:32px; margin-bottom:8px; }
+  .p-action-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; font-weight:700; color:var(--gray-700); }
+  .p-action-sub { font-size:11px; color:var(--gray-400); margin-top:3px; }
+
+  /* ==================== SEARCH ==================== */
+  .search-screen { background:var(--gray-100); }
+  .search-header { padding:60px 24px 16px; background:white; }
+  .search-wrap {
+    display:flex; align-items:center; gap:10px; background:var(--gray-100);
+    border-radius:14px; padding:12px 16px; border:2px solid transparent; transition:0.2s;
+  }
+  .search-wrap:focus-within { border-color:var(--blue-main); background:var(--blue-pale); }
+  .search-input { flex:1; border:none; background:none; font-size:16px; font-family:inherit; color:var(--gray-700); outline:none; }
+  .search-input::placeholder { color:var(--gray-400); }
+
+  .filter-strip { display:flex; gap:8px; padding:12px 24px; overflow-x:auto; }
+  .filter-chip {
+    padding:8px 14px; background:white; border-radius:20px; font-size:13px;
+    font-weight:500; color:var(--gray-600); cursor:pointer;
+    border:1px solid var(--gray-200); transition:0.2s; white-space:nowrap;
+  }
+  .filter-chip.active, .filter-chip:active { background:var(--blue-main); color:white; border-color:var(--blue-main); }
+
+  .map-box {
+    margin:0 24px; height:180px; border-radius:var(--radius-md);
+    background:linear-gradient(135deg,#d4e8f7,#e8f0f7,#c8dff0);
+    position:relative; overflow:hidden; border:1px solid var(--gray-200); cursor:pointer;
+  }
+  .map-box:active { opacity:0.9; }
+  .map-line { position:absolute; background:rgba(255,255,255,0.5); }
+  .map-line.h { height:2px; width:100%; }
+  .map-line.v { width:2px; height:100%; }
+  .map-pin {
+    position:absolute; z-index:2; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center;
+    animation:bounce 2s infinite;
+  }
+  .map-pin-circle {
+    width:14px; height:14px; border-radius:50%; border:3px solid white;
+    box-shadow:0 2px 8px rgba(0,0,0,0.2);
+  }
+  .map-pin-circle.blue { background:var(--blue-main); }
+  .map-pin-circle.orange { background:var(--orange-main); }
+  .map-pin-circle.green { background:var(--green); }
+  .map-pin-name {
+    font-size:9px; font-weight:600; color:var(--gray-600); background:white;
+    padding:1px 5px; border-radius:4px; margin-top:2px; box-shadow:var(--shadow-sm);
+  }
+  .map-me {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    background:var(--blue-main); color:white; font-size:10px; font-weight:700;
+    padding:5px 12px; border-radius:12px; box-shadow:0 2px 10px rgba(43,134,197,0.3); z-index:3;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+  .results-area { padding:16px 24px; }
+  .results-label { font-size:13px; font-weight:600; color:var(--gray-500); margin-bottom:10px; }
+
+  .pharma-card {
+    background:white; border-radius:var(--radius-md); padding:16px;
+    box-shadow:var(--shadow-sm); margin-bottom:10px; cursor:pointer;
+    border:2px solid transparent; transition:0.2s;
+  }
+  .pharma-card:active { border-color:var(--blue-main); }
+  .pharma-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; }
+  .pharma-name { font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:15px; color:var(--gray-700); }
+  .pharma-dist { font-size:12px; font-weight:600; color:var(--blue-main); background:var(--blue-pale); padding:4px 10px; border-radius:20px; }
+  .pharma-addr { font-size:12px; color:var(--gray-400); margin-bottom:10px; }
+  .pharma-bottom { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .stock-tag { display:flex; align-items:center; gap:5px; font-size:13px; font-weight:600; }
+  .stock-dot { width:8px; height:8px; border-radius:50%; }
+  .stock-tag.ok { color:var(--green); }
+  .stock-tag.ok .stock-dot { background:var(--green); }
+  .stock-tag.low { color:#C49600; }
+  .stock-tag.low .stock-dot { background:var(--yellow); }
+  .stock-tag.out { color:var(--red); }
+  .stock-tag.out .stock-dot { background:var(--red); }
+  .pharma-price { font-family:'Plus Jakarta Sans',sans-serif; font-size:17px; font-weight:700; color:var(--gray-700); }
+
+  /* ==================== MED DETAIL ==================== */
+  .detail-screen { background:var(--gray-100); }
+  .detail-hero {
+    background:linear-gradient(135deg,var(--blue-main),var(--blue-dark));
+    padding:60px 24px 28px; text-align:center;
+  }
+  .detail-pill-icon { font-size:48px; margin-bottom:10px; }
+  .detail-med-name { font-family:'Plus Jakarta Sans',sans-serif; font-size:22px; font-weight:800; color:white; }
+  .detail-med-sub { font-size:14px; color:rgba(255,255,255,0.7); margin-top:4px; }
+  .detail-content { padding:20px 24px; }
+  .detail-info-row {
+    display:flex; justify-content:space-between; padding:14px 0;
+    border-bottom:1px solid var(--gray-200);
+  }
+  .detail-info-label { font-size:14px; color:var(--gray-400); }
+  .detail-info-val { font-size:14px; font-weight:600; color:var(--gray-700); }
+  .detail-actions { padding:20px 24px; display:flex; flex-direction:column; gap:10px; }
+
+  /* ==================== DOSES ==================== */
+  .doses-screen { background:var(--gray-100); }
+  .doses-header { padding:60px 24px 16px; background:white; }
+  .date-strip { display:flex; gap:8px; padding:14px 24px; overflow-x:auto; }
+  .date-item {
+    min-width:50px; text-align:center; padding:10px 6px; border-radius:14px;
+    cursor:pointer; background:white; border:1px solid var(--gray-200); transition:0.2s;
+  }
+  .date-item.active { background:var(--blue-main); border-color:var(--blue-main); }
+  .date-day { font-size:11px; font-weight:500; color:var(--gray-400); margin-bottom:3px; }
+  .date-item.active .date-day { color:rgba(255,255,255,0.7); }
+  .date-num { font-family:'Plus Jakarta Sans',sans-serif; font-size:17px; font-weight:700; color:var(--gray-700); }
+  .date-item.active .date-num { color:white; }
+
+  .dose-group-label {
+    padding:12px 24px 6px; font-size:12px; font-weight:600; color:var(--gray-400);
+    text-transform:uppercase; letter-spacing:0.8px;
+  }
+  .dose-list { padding:0 24px; display:flex; flex-direction:column; gap:8px; }
+  .dose-card {
+    background:white; border-radius:var(--radius-md); padding:14px;
+    display:flex; align-items:center; gap:12px; box-shadow:var(--shadow-sm);
+    cursor:pointer; transition:all 0.25s; border:2px solid transparent;
+  }
+  .dose-card:active { transform:scale(0.98); }
+  .dose-card.confirmed { background:var(--green-pale); border-color:var(--green); }
+  .dose-time-col { text-align:center; min-width:46px; }
+  .dose-time { font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:700; color:var(--gray-700); }
+  .dose-ampm { font-size:10px; font-weight:600; color:var(--gray-400); }
+  .dose-bar { width:3px; height:38px; border-radius:3px; flex-shrink:0; }
+  .dose-bar.taken { background:var(--green); }
+  .dose-bar.pending { background:var(--orange-main); }
+  .dose-bar.missed { background:var(--red); }
+  .dose-info { flex:1; }
+  .dose-med { font-weight:600; font-size:14px; color:var(--gray-700); }
+  .dose-desc { font-size:12px; color:var(--gray-400); margin-top:2px; }
+  .dose-btn {
+    padding:8px 12px; border-radius:10px; font-size:11px; font-weight:600;
+    border:none; cursor:pointer; font-family:inherit; transition:0.2s;
+  }
+  .dose-btn.taken { background:var(--green-pale); color:var(--green); }
+  .dose-btn.pending { background:var(--orange-main); color:white; }
+  .dose-btn.pending:active { background:#D97D0F; }
+  .dose-btn.missed { background:var(--red-pale); color:var(--red); }
+
+  /* ==================== MIRROR / CAREGIVER ==================== */
+  .mirror-screen { background:var(--gray-100); }
+  .mirror-header {
+    padding:60px 24px 24px;
+    background:linear-gradient(135deg,var(--blue-dark),#0E3A5C);
+  }
+  .mirror-sub { font-size:13px; color:rgba(255,255,255,0.5); margin-top:4px; }
+
+  .patient-card-float {
+    margin:-18px 24px 0; background:white; border-radius:var(--radius-lg);
+    padding:16px; box-shadow:var(--shadow-lg); display:flex; align-items:center;
+    gap:14px; position:relative; z-index:2; cursor:pointer;
+  }
+  .patient-card-float:active { transform:scale(0.98); }
+  .avatar-circle {
+    width:52px; height:52px; border-radius:50%;
+    background:linear-gradient(135deg,var(--blue-pale),var(--blue-light));
+    display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0;
+  }
+  .pcf-info { flex:1; }
+  .pcf-name { font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:15px; color:var(--gray-700); }
+  .pcf-rel { font-size:12px; color:var(--gray-400); }
+  .pcf-status {
+    padding:5px 10px; border-radius:16px; font-size:11px; font-weight:600;
+  }
+  .pcf-status.ok { background:var(--green-pale); color:var(--green); }
+  .pcf-status.alert { background:var(--red-pale); color:var(--red); }
+
+  .alert-banner {
+    margin:14px 24px 0; background:var(--red-pale); border:1px solid rgba(231,76,60,0.15);
+    border-radius:var(--radius-md); padding:14px; display:flex; align-items:flex-start; gap:10px;
+    cursor:pointer;
+  }
+  .alert-banner:active { opacity:0.8; }
+  .alert-icon { font-size:18px; flex-shrink:0; }
+  .alert-text { font-size:13px; color:var(--gray-600); line-height:1.5; }
+  .alert-text strong { color:var(--red); }
+
+  .mirror-sect { padding:18px 24px 8px; }
+  .mirror-sect-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:700; color:var(--gray-700); margin-bottom:10px; }
+
+  .adh-chart {
+    background:white; border-radius:var(--radius-md); padding:16px;
+    box-shadow:var(--shadow-sm); margin-bottom:12px;
+  }
+  .adh-bars { display:flex; align-items:flex-end; justify-content:space-between; height:90px; gap:5px; margin-bottom:10px; }
+  .adh-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .adh-bar { width:100%; max-width:26px; border-radius:5px 5px 3px 3px; }
+  .adh-lbl { font-size:10px; font-weight:600; color:var(--gray-400); }
+  .adh-summary { display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid var(--gray-200); }
+  .adh-pct { font-family:'Plus Jakarta Sans',sans-serif; font-size:26px; font-weight:800; color:var(--green); }
+  .adh-desc { font-size:12px; color:var(--gray-400); }
+
+  .mirror-dose-item {
+    background:white; border-radius:var(--radius-sm); padding:12px 14px;
+    display:flex; align-items:center; gap:10px; box-shadow:var(--shadow-sm); margin-bottom:8px;
+    cursor:pointer;
+  }
+  .mirror-dose-item:active { background:var(--gray-100); }
+  .mdi-icon {
+    width:30px; height:30px; border-radius:50%; display:flex;
+    align-items:center; justify-content:center; font-size:14px; flex-shrink:0;
+  }
+  .mdi-icon.done { background:var(--green-pale); }
+  .mdi-icon.miss { background:var(--red-pale); }
+  .mdi-icon.wait { background:var(--yellow-pale); }
+  .mdi-info { flex:1; }
+  .mdi-med { font-weight:600; font-size:13px; color:var(--gray-700); }
+  .mdi-time { font-size:11px; color:var(--gray-400); }
+
+  /* ==================== ELDERLY MODE ==================== */
+  .elderly-screen { background:var(--blue-pale); }
+  .elderly-header { padding:60px 24px 20px; text-align:center; }
+  .elderly-hello { font-size:18px; color:var(--gray-500); margin-bottom:4px; }
+  .elderly-name { font-family:'Plus Jakarta Sans',sans-serif; font-size:28px; font-weight:800; color:var(--gray-700); }
+  .elderly-content { padding:16px 24px; }
+
+  .big-dose-card {
+    background:white; border-radius:var(--radius-xl); padding:28px 20px;
+    text-align:center; box-shadow:var(--shadow-lg); margin-bottom:16px;
+    cursor:pointer; transition:all 0.25s; border:3px solid transparent;
+  }
+  .big-dose-card:active { transform:scale(0.97); }
+  .big-dose-card.done { border-color:var(--green); background:var(--green-pale); }
+  .bdc-emoji { font-size:52px; margin-bottom:12px; }
+  .bdc-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:22px; font-weight:800; color:var(--gray-700); }
+  .bdc-sub { font-size:16px; color:var(--gray-500); margin-top:6px; }
+  .bdc-time {
+    display:inline-block; margin-top:12px; padding:8px 20px;
+    background:var(--orange-pale); border-radius:12px;
+    font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:700; color:var(--orange-main);
+  }
+  .bdc-btn {
+    margin-top:18px; padding:18px 32px;
+    background:var(--green); color:white; border:none; border-radius:16px;
+    font-size:20px; font-weight:700; font-family:inherit; cursor:pointer;
+    box-shadow:0 6px 20px rgba(39,174,96,0.35); transition:0.2s;
+  }
+  .bdc-btn:active { background:#219653; transform:scale(0.95); }
+  .bdc-btn.disabled {
+    background:var(--gray-300); color:var(--gray-500);
+    box-shadow:none; cursor:default;
+  }
+  .bdc-done-text {
+    margin-top:16px; font-size:18px; font-weight:700; color:var(--green);
+    display:none;
+  }
+
+  .elderly-help {
+    margin-top:12px; padding:16px; background:white; border-radius:var(--radius-md);
+    display:flex; align-items:center; gap:12px; box-shadow:var(--shadow-sm); cursor:pointer;
+  }
+  .elderly-help:active { background:var(--gray-100); }
+  .elderly-help-icon { font-size:28px; }
+  .elderly-help-text { font-size:15px; font-weight:600; color:var(--gray-700); }
+
+  /* ==================== PHARMACY DASHBOARD ==================== */
+  .pharmacy-screen { background:var(--gray-100); }
+  .pharmacy-header {
+    padding:60px 24px 20px;
+    background:linear-gradient(135deg,#1A5276,#0E3A5C);
+  }
+  .pharmacy-name-h { font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:800; color:white; }
+  .pharmacy-sub { font-size:13px; color:rgba(255,255,255,0.5); margin-top:4px; }
+
+  .pharm-stats {
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    padding:0 24px; margin-top:-10px; position:relative; z-index:2;
+  }
+  .pharm-stat-card {
+    background:white; border-radius:var(--radius-md); padding:16px;
+    box-shadow:var(--shadow-md); text-align:center;
+  }
+  .psc-val { font-family:'Plus Jakarta Sans',sans-serif; font-size:24px; font-weight:800; color:var(--gray-700); }
+  .psc-label { font-size:11px; color:var(--gray-400); margin-top:2px; }
+
+  .pharm-section { padding:18px 24px 8px; }
+  .pharm-section-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:700; color:var(--gray-700); margin-bottom:10px; }
+
+  .order-card {
+    background:white; border-radius:var(--radius-sm); padding:14px;
+    box-shadow:var(--shadow-sm); margin-bottom:10px; display:flex;
+    align-items:center; gap:12px; cursor:pointer;
+  }
+  .order-card:active { background:var(--gray-100); }
+  .order-num {
+    width:36px; height:36px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; font-weight:700; flex-shrink:0;
+  }
+  .order-num.new { background:var(--orange-pale); color:var(--orange-main); }
+  .order-num.ready { background:var(--green-pale); color:var(--green); }
+  .order-info { flex:1; }
+  .order-med { font-weight:600; font-size:13px; color:var(--gray-700); }
+  .order-detail { font-size:11px; color:var(--gray-400); margin-top:2px; }
+  .order-status {
+    font-size:11px; font-weight:600; padding:5px 10px; border-radius:12px;
+  }
+  .order-status.new { background:var(--orange-pale); color:var(--orange-main); }
+  .order-status.ready { background:var(--green-pale); color:var(--green); }
+
+  .stock-item {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 0; border-bottom:1px solid var(--gray-200);
+  }
+  .stock-item:last-child { border-bottom:none; }
+  .si-med { font-size:14px; font-weight:600; color:var(--gray-700); }
+  .si-qty { font-size:13px; color:var(--gray-400); }
+  .si-status { font-size:12px; font-weight:600; padding:4px 10px; border-radius:10px; }
+  .si-status.ok { background:var(--green-pale); color:var(--green); }
+  .si-status.low { background:var(--yellow-pale); color:#C49600; }
+  .si-status.crit { background:var(--red-pale); color:var(--red); }
+
+  /* ==================== MODALS ==================== */
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000;
+    display:flex; align-items:flex-end; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity 0.3s;
+  }
+  .modal-overlay.show { opacity:1; pointer-events:all; }
+  .modal-sheet {
+    background:white; border-radius:24px 24px 0 0; padding:16px 24px 36px;
+    width:390px; transform:translateY(100%);
+    transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);
+    text-align:center;
+  }
+  .modal-overlay.show .modal-sheet { transform:translateY(0); }
+  .modal-handle { width:36px; height:4px; background:var(--gray-300); border-radius:2px; margin:0 auto 16px; }
+  .modal-emoji { font-size:44px; margin-bottom:10px; }
+  .modal-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:700; color:var(--gray-700); margin-bottom:4px; }
+  .modal-sub { font-size:14px; color:var(--gray-400); margin-bottom:20px; }
+  .modal-btn-row { display:flex; flex-direction:column; gap:8px; }
+
+  /* Responsive */
+  @media (max-width:420px) {
+    body { padding:0; }
+    .phone-frame { width:100%; height:100vh; border-radius:0; box-shadow:none; }
+    .phone-frame::before { display:none; }
+    .modal-sheet { width:100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame" id="app">
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ===== 1. ROLE SELECT ===== -->
+  <div class="screen role-screen active" id="s-roles">
+    <div class="status-bar light"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+    <div class="role-header">
+      <div class="role-logo">
+        <div class="role-logo-pill">➕</div>
+        <div class="role-logo-text">Farma<span>Go</span></div>
+      </div>
+      <div class="role-tagline">Tu salud, en el lugar y momento exactos</div>
+    </div>
+    <div class="role-section-title">¿Cómo usas FarmaGo?</div>
+    <div class="role-cards">
+      <div class="role-card" onclick="go('s-patient')">
+        <div class="role-card-icon blue">💊</div>
+        <div class="role-card-info">
+          <div class="role-card-title">Soy paciente</div>
+          <div class="role-card-desc">Busco medicamentos, controlo mis dosis y tratamientos</div>
+        </div>
+        <div class="role-card-arrow">›</div>
+      </div>
+      <div class="role-card" onclick="go('s-mirror')">
+        <div class="role-card-icon orange">👨‍👩‍👦</div>
+        <div class="role-card-info">
+          <div class="role-card-title">Soy cuidador familiar</div>
+          <div class="role-card-desc">Superviso el tratamiento de mi familiar a distancia</div>
+        </div>
+        <div class="role-card-arrow">›</div>
+      </div>
+      <div class="role-card" onclick="go('s-elderly')">
+        <div class="role-card-icon green">🧓</div>
+        <div class="role-card-info">
+          <div class="role-card-title">Modo adulto mayor</div>
+          <div class="role-card-desc">Interfaz simplificada con botones grandes y claros</div>
+        </div>
+        <div class="role-card-arrow">›</div>
+      </div>
+      <div class="role-card" onclick="go('s-pharmacy')">
+        <div class="role-card-icon purple">🏪</div>
+        <div class="role-card-info">
+          <div class="role-card-title">Soy farmacia aliada</div>
+          <div class="role-card-desc">Gestiono pedidos y visibilidad de mi inventario</div>
+        </div>
+        <div class="role-card-arrow">›</div>
+      </div>
+    </div>
+    <div style="padding:24px; text-align:center;">
+      <div style="font-size:11px; color:rgba(255,255,255,0.35);">Prototipo interactivo — Equipo 1 EGADE</div>
+    </div>
+  </div>
+
+  <!-- ===== 2. PATIENT HOME ===== -->
+  <div class="screen patient-home" id="s-patient">
+    <div class="status-bar light"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+    <div class="p-header">
+      <div class="p-greeting">Buenos días 👋</div>
+      <div class="p-name">Miguel Cantú</div>
+    </div>
+    <div class="next-dose-banner" onclick="go('s-doses')">
+      <div class="ndb-label">⏰ Próxima dosis</div>
+      <div class="ndb-med">Metformina 850mg</div>
+      <div class="ndb-time">Hoy a las <strong>2:00 PM</strong> — en 3 horas</div>
+    </div>
+    <div class="p-stats">
+      <div class="p-stat"><div class="p-stat-val">3</div><div class="p-stat-label">Medicamentos</div></div>
+      <div class="p-stat"><div class="p-stat-val">92%</div><div class="p-stat-label">Adherencia</div></div>
+      <div class="p-stat"><div class="p-stat-val">5 días</div><div class="p-stat-label">Para resurtir</div></div>
+    </div>
+    <div class="p-section-title">¿Qué necesitas?</div>
+    <div class="p-action-grid scroll-pad">
+      <div class="p-action-card" onclick="go('s-search')">
+        <div class="p-action-icon">🔍</div>
+        <div class="p-action-title">Buscar medicamento</div>
+        <div class="p-action-sub">Stock en farmacias cercanas</div>
+      </div>
+      <div class="p-action-card" onclick="go('s-doses')">
+        <div class="p-action-icon">💊</div>
+        <div class="p-action-title">Mis dosis</div>
+        <div class="p-action-sub">2 pendientes hoy</div>
+      </div>
+      <div class="p-action-card" onclick="go('s-inventory')">
+        <div class="p-action-icon">📦</div>
+        <div class="p-action-title">Mi inventario</div>
+        <div class="p-action-sub">Control de stock personal</div>
+      </div>
+      <div class="p-action-card" onclick="go('s-health-log')">
+        <div class="p-action-icon">📋</div>
+        <div class="p-action-title">Bitácora de salud</div>
+        <div class="p-action-sub">Registra síntomas</div>
+      </div>
+      <div class="p-action-card" onclick="go('s-recipes')">
+        <div class="p-action-icon">📄</div>
+        <div class="p-action-title">Receta digital</div>
+        <div class="p-action-sub">Sube tu receta médica</div>
+      </div>
+      <div class="p-action-card" onclick="go('s-mirror')">
+        <div class="p-action-icon">🪞</div>
+        <div class="p-action-title">Modo Espejo</div>
+        <div class="p-action-sub">Supervisión familiar</div>
+      </div>
+    </div>
+    <div class="bottom-nav dark">
+      <div class="nav-item active"><div class="nav-icon">🏠</div><div class="nav-label">Inicio</div></div>
+      <div class="nav-item" onclick="go('s-search')"><div class="nav-icon">🔍</div><div class="nav-label">Buscar</div></div>
+      <div class="nav-item" onclick="go('s-doses')"><div class="nav-icon">💊</div><div class="nav-label">Dosis</div></div>
+      <div class="nav-item" onclick="go('s-roles')"><div class="nav-icon">👤</div><div class="nav-label">Perfil</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 3. SEARCH ===== -->
+  <div class="screen search-screen" id="s-search">
+    <div class="search-header">
+      <div class="status-bar"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+      <button class="screen-back" onclick="goBack()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 4 6 9 12 14"/></svg> Atrás
+      </button>
+      <div class="search-wrap">
+        <svg width="18" height="18" fill="none" stroke="#A0ADB8" stroke-width="2"><circle cx="8" cy="8" r="6"/><line x1="12" y1="12" x2="16" y2="16"/></svg>
+        <input class="search-input" type="text" placeholder="Metformina 850mg" value="Metformina 850mg">
+      </div>
+    </div>
+    <div class="filter-strip">
+      <div class="filter-chip active" onclick="filterClick(this)">Todos</div>
+      <div class="filter-chip" onclick="filterClick(this)">Genéricos</div>
+      <div class="filter-chip" onclick="filterClick(this)">Más baratos</div>
+      <div class="filter-chip" onclick="filterClick(this)">Más cerca</div>
+    </div>
+    <div class="map-box" onclick="toast('info','🗺️ Mapa expandido — función próximamente')">
+      <div class="map-line h" style="top:35%"></div>
+      <div class="map-line h" style="top:65%"></div>
+      <div class="map-line v" style="left:25%"></div>
+      <div class="map-line v" style="left:55%"></div>
+      <div class="map-line v" style="left:80%"></div>
+      <div class="map-pin" style="top:20%;left:20%"><div class="map-pin-circle blue"></div><div class="map-pin-name">Guadalajara</div></div>
+      <div class="map-pin" style="top:55%;left:68%"><div class="map-pin-circle blue"></div><div class="map-pin-name">Similares</div></div>
+      <div class="map-pin" style="top:72%;left:38%"><div class="map-pin-circle orange"></div><div class="map-pin-name">San Pablo</div></div>
+      <div class="map-me">📍 Tú estás aquí</div>
+    </div>
+    <div class="results-area scroll-pad">
+      <div class="results-label">3 farmacias con disponibilidad</div>
+      <div class="pharma-card" onclick="go('s-med-detail')">
+        <div class="pharma-top"><div class="pharma-name">Farmacia Guadalajara</div><div class="pharma-dist">📍 0.8 km</div></div>
+        <div class="pharma-addr">Av. Revolución 1450, Col. Centro</div>
+        <div class="pharma-bottom"><div class="stock-tag ok"><div class="stock-dot"></div>Disponible</div><div class="pharma-price">$189.00</div></div>
+        <button class="btn-primary" onclick="event.stopPropagation(); go('s-med-detail')">Ver detalle y reservar</button>
+      </div>
+      <div class="pharma-card" onclick="go('s-med-detail')">
+        <div class="pharma-top"><div class="pharma-name">Farmacias Similares</div><div class="pharma-dist">📍 1.2 km</div></div>
+        <div class="pharma-addr">Blvd. Díaz Ordaz 245</div>
+        <div class="pharma-bottom"><div class="stock-tag ok"><div class="stock-dot"></div>Disponible</div><div class="pharma-price">$145.00</div></div>
+        <button class="btn-primary" onclick="event.stopPropagation(); go('s-med-detail')">Ver detalle y reservar</button>
+      </div>
+      <div class="pharma-card" onclick="go('s-med-detail')">
+        <div class="pharma-top"><div class="pharma-name">Farmacia San Pablo</div><div class="pharma-dist">📍 2.1 km</div></div>
+        <div class="pharma-addr">Calzada del Valle 400</div>
+        <div class="pharma-bottom"><div class="stock-tag low"><div class="stock-dot"></div>Poco stock</div><div class="pharma-price">$165.00</div></div>
+        <button class="btn-primary" onclick="event.stopPropagation(); go('s-med-detail')">Ver detalle y reservar</button>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="go('s-patient')"><div class="nav-icon">🏠</div><div class="nav-label">Inicio</div></div>
+      <div class="nav-item active"><div class="nav-icon">🔍</div><div class="nav-label">Buscar</div></div>
+      <div class="nav-item" onclick="go('s-doses')"><div class="nav-icon">💊</div><div class="nav-label">Dosis</div></div>
+      <div class="nav-item" onclick="go('s-roles')"><div class="nav-icon">👤</div><div class="nav-label">Perfil</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 4. MED DETAIL ===== -->
+  <div class="screen detail-screen" id="s-med-detail">
+    <div class="detail-hero">
+      <div class="status-bar light"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+      <button class="screen-back light" onclick="go('s-search')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 4 6 9 12 14"/></svg> Resultados
+      </button>
+      <div class="detail-pill-icon">💊</div>
+      <div class="detail-med-name">Metformina 850mg</div>
+      <div class="detail-med-sub">Farmacia Guadalajara — Av. Revolución 1450</div>
+    </div>
+    <div class="detail-content">
+      <div class="detail-info-row"><span class="detail-info-label">Precio</span><span class="detail-info-val">$189.00 MXN</span></div>
+      <div class="detail-info-row"><span class="detail-info-label">Distancia</span><span class="detail-info-val">0.8 km — 12 min caminando</span></div>
+      <div class="detail-info-row"><span class="detail-info-label">Stock</span><span class="detail-info-val" style="color:var(--green)">✓ Disponible (24 unidades)</span></div>
+      <div class="detail-info-row"><span class="detail-info-label">Presentación</span><span class="detail-info-val">Caja 30 tabletas</span></div>
+      <div class="detail-info-row"><span class="detail-info-label">Laboratorio</span><span class="detail-info-val">Merck</span></div>
+      <div class="detail-info-row"><span class="detail-info-label">Horario</span><span class="detail-info-val">8:00 AM — 10:00 PM</span></div>
+    </div>
+    <div class="detail-actions scroll-pad">
+      <button class="btn-primary btn-orange" onclick="toast('success','📍 Ruta trazada — abre Google Maps'); setTimeout(()=>go('s-patient'),1500)">📍 Ver ruta en mapa</button>
+      <button class="btn-primary" onclick="toast('success','✅ Reserva confirmada'); setTimeout(()=>go('s-patient'),1500)">✓ Reservar medicamento</button>
+      <button class="btn-outline" onclick="go('s-search')">Volver a resultados</button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="go('s-patient')"><div class="nav-icon">🏠</div><div class="nav-label">Inicio</div></div>
+      <div class="nav-item active" onclick="go('s-search')"><div class="nav-icon">🔍</div><div class="nav-label">Buscar</div></div>
+      <div class="nav-item" onclick="go('s-doses')"><div class="nav-icon">💊</div><div class="nav-label">Dosis</div></div>
+      <div class="nav-item" onclick="go('s-roles')"><div class="nav-icon">👤</div><div class="nav-label">Perfil</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 5. DOSES ===== -->
+  <div class="screen doses-screen" id="s-doses">
+    <div class="doses-header">
+      <div class="status-bar"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+      <button class="screen-back" onclick="go('s-patient')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 4 6 9 12 14"/></svg> Inicio
+      </button>
+      <div class="screen-title">Mis Dosis</div>
+    </div>
+    <div class="date-strip">
+      <div class="date-item" onclick="dateClick(this)"><div class="date-day">Lun</div><div class="date-num">24</div></div>
+      <div class="date-item" onclick="dateClick(this)"><div class="date-day">Mar</div><div class="date-num">25</div></div>
+      <div class="date-item" onclick="dateClick(this)"><div class="date-day">Mié</div><div class="date-num">26</div></div>
+      <div class="date-item active" onclick="dateClick(this)"><div class="date-day">Hoy</div><div class="date-num">27</div></div>
+      <div class="date-item" onclick="dateClick(this)"><div class="date-day">Vie</div><div class="date-num">28</div></div>
+      <div class="date-item" onclick="dateClick(this)"><div class="date-day">Sáb</div><div class="date-num">1</div></div>
+      <div class="date-item" onclick="dateClick(this)"><div class="date-day">Dom</div><div class="date-num">2</div></div>
+    </div>
+
+    <div class="dose-group-label">Mañana</div>
+    <div class="dose-list">
+      <div class="dose-card" id="d1" onclick="toast('info','✓ Esta dosis ya fue confirmada')">
+        <div class="dose-time-col"><div class="dose-time">8:00</div><div class="dose-ampm">AM</div></div>
+        <div class="dose-bar taken"></div>
+        <div class="dose-info"><div class="dose-med">Metformina 850mg</div><div class="dose-desc">1 tableta — con alimento</div></div>
+        <button class="dose-btn taken">✓ Tomada</button>
+      </div>
+      <div class="dose-card" id="d2" onclick="toast('info','✓ Esta dosis ya fue confirmada')">
+        <div class="dose-time-col"><div class="dose-time">8:00</div><div class="dose-ampm">AM</div></div>
+        <div class="dose-bar taken"></div>
+        <div class="dose-info"><div class="dose-med">Losartán 50mg</div><div class="dose-desc">1 tableta — en ayunas</div></div>
+        <button class="dose-btn taken">✓ Tomada</button>
+      </div>
+    </div>
+
+    <div class="dose-group-label">Tarde</div>
+    <div class="dose-list">
+      <div class="dose-card" id="d3" onclick="openConfirm('d3','Metformina 850mg','2:00 PM')">
+        <div class="dose-time-col"><div class="dose-time">2:00</div><div class="dose-ampm">PM</div></div>
+        <div class="dose-bar pending"></div>
+        <div class="dose-info"><div class="dose-med">Metformina 850mg</div><div class="dose-desc">1 tableta — con alimento</div></div>
+        <button class="dose-btn pending">Confirmar</button>
+      </div>
+    </div>
+
+    <div class="dose-group-label">Noche</div>
+    <div class="dose-list scroll-pad">
+      <div class="dose-card" id="d4" onclick="openConfirm('d4','Metformina 850mg','8:00 PM')">
+        <div class="dose-time-col"><div class="dose-time">8:00</div><div class="dose-ampm">PM</div></div>
+        <div class="dose-bar pending"></div>
+        <div class="dose-info"><div class="dose-med">Metformina 850mg</div><div class="dose-desc">1 tableta — con alimento</div></div>
+        <button class="dose-btn pending">Confirmar</button>
+      </div>
+      <div class="dose-card" id="d5" onclick="openConfirm('d5','Losartán 50mg','9:00 PM')">
+        <div class="dose-time-col"><div class="dose-time">9:00</div><div class="dose-ampm">PM</div></div>
+        <div class="dose-bar pending"></div>
+        <div class="dose-info"><div class="dose-med">Losartán 50mg</div><div class="dose-desc">1 tableta</div></div>
+        <button class="dose-btn pending">Confirmar</button>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="go('s-patient')"><div class="nav-icon">🏠</div><div class="nav-label">Inicio</div></div>
+      <div class="nav-item" onclick="go('s-search')"><div class="nav-icon">🔍</div><div class="nav-label">Buscar</div></div>
+      <div class="nav-item active"><div class="nav-icon">💊</div><div class="nav-label">Dosis</div></div>
+      <div class="nav-item" onclick="go('s-roles')"><div class="nav-icon">👤</div><div class="nav-label">Perfil</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 6. INVENTORY ===== -->
+  <div class="screen" id="s-inventory" style="background:var(--gray-100)">
+    <div style="padding:60px 24px 16px; background:white;">
+      <div class="status-bar"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+      <button class="screen-back" onclick="go('s-patient')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 4 6 9 12 14"/></svg> Inicio
+      </button>
+      <div class="screen-title">Mi Inventario</div>
+    </div>
+    <div style="padding:20px 24px;">
+      <div class="card" style="margin-bottom:12px; cursor:pointer;" onclick="toast('info','📦 Detalle de Metformina')">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-weight:700; font-size:15px; color:var(--gray-700);">Metformina 850mg</span>
+          <span style="font-size:12px; font-weight:600; padding:4px 10px; border-radius:10px; background:var(--yellow-pale); color:#C49600;">⚠️ 5 días</span>
+        </div>
+        <div style="background:var(--gray-200); border-radius:6px; height:8px; overflow:hidden; margin-bottom:6px;">
+          <div style="background:var(--yellow); height:100%; width:30%; border-radius:6px;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray-400);">
+          <span>9 tabletas restantes</span><span>de 30</span>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px; cursor:pointer;" onclick="toast('info','📦 Detalle de Losartán')">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-weight:700; font-size:15px; color:var(--gray-700);">Losartán 50mg</span>
+          <span style="font-size:12px; font-weight:600; padding:4px 10px; border-radius:10px; background:var(--green-pale); color:var(--green);">✓ 18 días</span>
+        </div>
+        <div style="background:var(--gray-200); border-radius:6px; height:8px; overflow:hidden; margin-bottom:6px;">
+          <div style="background:var(--green); height:100%; width:60%; border-radius:6px;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray-400);">
+          <span>18 tabletas restantes</span><span>de 30</span>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px; cursor:pointer;" onclick="toast('info','📦 Detalle de Atorvastatina')">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-weight:700; font-size:15px; color:var(--gray-700);">Atorvastatina 20mg</span>
+          <span style="font-size:12px; font-weight:600; padding:4px 10px; border-radius:10px; background:var(--red-pale); color:var(--red);">🔴 2 días</span>
+        </div>
+        <div style="background:var(--gray-200); border-radius:6px; height:8px; overflow:hidden; margin-bottom:6px;">
+          <div style="background:var(--red); height:100%; width:10%; border-radius:6px;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray-400);">
+          <span>2 tabletas restantes</span><span>de 30</span>
+        </div>
+      </div>
+      <button class="btn-primary btn-orange" onclick="go('s-search')" style="margin-top:8px;">🔍 Buscar farmacias para resurtir</button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="go('s-patient')"><div class="nav-icon">🏠</div><div class="nav-label">Inicio</div></div>
+      <div class="nav-item" onclick="go('s-search')"><div class="nav-icon">🔍</div><div class="nav-label">Buscar</div></div>
+      <div class="nav-item" onclick="go('s-doses')"><div class="nav-icon">💊</div><div class="nav-label">Dosis</div></div>
+      <div class="nav-item" onclick="go('s-roles')"><div class="nav-icon">👤</div><div class="nav-label">Perfil</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 7. HEALTH LOG (simple) ===== -->
+  <div class="screen" id="s-health-log" style="background:var(--gray-100)">
+    <div style="padding:60px 24px 16px; background:white;">
+      <div class="status-bar"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+      <button class="screen-back" onclick="go('s-patient')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 4 6 9 12 14"/></svg> Inicio
+      </button>
+      <div class="screen-title">Bitácora de Salud</div>
+    </div>
+    <div style="padding:20px 24px;" class="scroll-pad">
+      <div class="card" style="margin-bottom:12px;"><div style="font-size:13px; color:var(--gray-400); margin-bottom:4px;">Hoy, 10:30 AM</div><div style="font-weight:600; color:var(--gray-700);">Me sentí mareado al levantarme</div><div style="font-size:12px; color:var(--gray-400); margin-top:4px;">Presión: 130/85 — Glucosa: 145 mg/dL</div></div>
+      <div class="card" style="margin-bottom:12px;"><div style="font-size:13px; color:var(--gray-400); margin-bottom:4px;">Ayer, 8:00 PM</div><div style="font-weight:600; color:var(--gray-700);">Dolor de cabeza leve</div><div style="font-size:12px; color:var(--gray-400); margin-top:4px;">Sin medición</div></div>
+      <div class="card" style="margin-bottom:12px;"><div style="font-size:13px; color:var(--gray-400); margin-bottom:4px;">25 Feb, 9:00 AM</div><div style="font-weight:600; color:var(--gray-700);">Todo bien, sin síntomas</div><div style="font-size:12px; color:var(--gray-400); margin-top:4px;">Presión: 120/80 — Glucosa: 110 mg/dL</div></div>
+      <button class="btn-primary" onclick="toast('success','📝 Nuevo registro añadido')">+ Nuevo registro</button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="go('s-patient')"><div class="nav-icon">🏠</div><div class="nav-label">Inicio</div></div>
+      <div class="nav-item" onclick="go('s-search')"><div class="nav-icon">🔍</div><div class="nav-label">Buscar</div></div>
+      <div class="nav-item" onclick="go('s-doses')"><div class="nav-icon">💊</div><div class="nav-label">Dosis</div></div>
+      <div class="nav-item" onclick="go('s-roles')"><div class="nav-icon">👤</div><div class="nav-label">Perfil</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 8. RECIPES (simple) ===== -->
+  <div class="screen" id="s-recipes" style="background:var(--gray-100)">
+    <div style="padding:60px 24px 16px; background:white;">
+      <div class="status-bar"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+      <button class="screen-back" onclick="go('s-patient')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 4 6 9 12 14"/></svg> Inicio
+      </button>
+      <div class="screen-title">Receta Digital</div>
+    </div>
+    <div style="padding:20px 24px;" class="scroll-pad">
+      <div style="text-align:center; padding:40px 20px;">
+        <div style="font-size:52px; margin-bottom:16px;">📄</div>
+        <div style="font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:700; color:var(--gray-700); margin-bottom:8px;">Sube tu receta médica</div>
+        <div style="font-size:14px; color:var(--gray-400); margin-bottom:24px; line-height:1.5;">Toma una foto o sube un PDF de tu receta. FarmaGo la digitalizará y buscará todos los medicamentos automáticamente.</div>
+        <button class="btn-primary btn-orange" onclick="toast('success','📷 Cámara abierta — función próximamente')" style="margin-bottom:10px;">📷 Tomar foto de receta</button>
+        <button class="btn-outline" onclick="toast('info','📁 Galería abierta — función próximamente')">📁 Subir desde galería</button>
+      </div>
+      <div class="card" style="margin-bottom:12px; cursor:pointer;" onclick="toast('info','📄 Abriendo receta del Dr. García')">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="font-size:24px;">📋</div>
+          <div style="flex:1;"><div style="font-weight:600; font-size:14px; color:var(--gray-700);">Receta Dr. García</div><div style="font-size:12px; color:var(--gray-400);">15 Feb 2026 — 3 medicamentos</div></div>
+          <div style="color:var(--gray-400);">›</div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="go('s-patient')"><div class="nav-icon">🏠</div><div class="nav-label">Inicio</div></div>
+      <div class="nav-item" onclick="go('s-search')"><div class="nav-icon">🔍</div><div class="nav-label">Buscar</div></div>
+      <div class="nav-item" onclick="go('s-doses')"><div class="nav-icon">💊</div><div class="nav-label">Dosis</div></div>
+      <div class="nav-item" onclick="go('s-roles')"><div class="nav-icon">👤</div><div class="nav-label">Perfil</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 9. MIRROR / CAREGIVER ===== -->
+  <div class="screen mirror-screen" id="s-mirror">
+    <div class="mirror-header">
+      <div class="status-bar light"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+      <button class="screen-back light" onclick="go('s-roles')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 4 6 9 12 14"/></svg> Atrás
+      </button>
+      <div class="screen-title" style="color:white;">Modo Espejo</div>
+      <div class="mirror-sub">SafeCare — Supervisión familiar</div>
+    </div>
+    <div class="patient-card-float" onclick="toast('info','👴 Perfil completo de Roberto')">
+      <div class="avatar-circle">👴</div>
+      <div class="pcf-info"><div class="pcf-name">Roberto Cantú</div><div class="pcf-rel">Tu papá · 68 años</div></div>
+      <div class="pcf-status alert">⚠️ 1 alerta</div>
+    </div>
+    <div class="alert-banner" onclick="toast('info','📞 Llamando a Roberto...')">
+      <div class="alert-icon">🔔</div>
+      <div class="alert-text"><strong>Dosis no confirmada</strong><br>Roberto no confirmó su Losartán de las 8:00 AM. Lleva 2 horas de retraso.<br><span style="color:var(--blue-main); font-weight:600; font-size:12px;">Toca para llamarle →</span></div>
+    </div>
+    <div class="mirror-sect">
+      <div class="mirror-sect-title">Adherencia semanal</div>
+      <div class="adh-chart">
+        <div class="adh-bars">
+          <div class="adh-col"><div class="adh-bar" style="height:85%;background:var(--green);"></div><div class="adh-lbl">Lun</div></div>
+          <div class="adh-col"><div class="adh-bar" style="height:100%;background:var(--green);"></div><div class="adh-lbl">Mar</div></div>
+          <div class="adh-col"><div class="adh-bar" style="height:70%;background:var(--orange-main);"></div><div class="adh-lbl">Mié</div></div>
+          <div class="adh-col"><div class="adh-bar" style="height:100%;background:var(--green);"></div><div class="adh-lbl">Jue</div></div>
+          <div class="adh-col"><div class="adh-bar" style="height:50%;background:var(--red);"></div><div class="adh-lbl">Vie</div></div>
+          <div class="adh-col"><div class="adh-bar" style="height:85%;background:var(--green);"></div><div class="adh-lbl">Sáb</div></div>
+          <div class="adh-col"><div class="adh-bar" style="height:42%;background:var(--orange-main);"></div><div class="adh-lbl">Hoy</div></div>
+        </div>
+        <div class="adh-summary">
+          <div><div class="adh-pct">78%</div><div class="adh-desc">Adherencia esta semana</div></div>
+          <div style="text-align:right;font-size:12px;color:var(--gray-400);">↓ 14% vs semana pasada</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 24px 8px;"><div class="mirror-sect-title">Dosis de hoy</div></div>
+    <div style="padding:0 24px;" class="scroll-pad">
+      <div class="mirror-dose-item" onclick="toast('info','✓ Confirmada a las 8:12 AM')"><div class="mdi-icon done">✅</div><div class="mdi-info"><div class="mdi-med">Metformina 850mg</div><div class="mdi-time">8:00 AM — Confirmada 8:12 AM</div></div></div>
+      <div class="mirror-dose-item" onclick="toast('info','📞 ¿Deseas llamar a Roberto?')"><div class="mdi-icon miss">❌</div><div class="mdi-info"><div class="mdi-med">Losartán 50mg</div><div class="mdi-time">8:00 AM — Sin confirmar (2h retraso)</div></div></div>
+      <div class="mirror-dose-item" onclick="toast('info','⏳ Pendiente a las 2:00 PM')"><div class="mdi-icon wait">⏳</div><div class="mdi-info"><div class="mdi-med">Metformina 850mg</div><div class="mdi-time">2:00 PM — Pendiente</div></div></div>
+      <div class="mirror-dose-item" onclick="toast('info','⏳ Pendiente a las 8:00 PM')"><div class="mdi-icon wait">⏳</div><div class="mdi-info"><div class="mdi-med">Metformina 850mg</div><div class="mdi-time">8:00 PM — Pendiente</div></div></div>
+      <div class="mirror-dose-item" onclick="toast('info','⏳ Pendiente a las 9:00 PM')"><div class="mdi-icon wait">⏳</div><div class="mdi-info"><div class="mdi-med">Losartán 50mg</div><div class="mdi-time">9:00 PM — Pendiente</div></div></div>
+      <button class="btn-primary" onclick="toast('info','📞 Llamando a Roberto...')" style="margin-top:12px;">📞 Llamar a Roberto</button>
+      <button class="btn-outline" onclick="toast('info','💬 Chat abierto con Roberto')" style="margin-top:8px;">💬 Enviar recordatorio</button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="go('s-roles')"><div class="nav-icon">🏠</div><div class="nav-label">Inicio</div></div>
+      <div class="nav-item" onclick="go('s-search')"><div class="nav-icon">🔍</div><div class="nav-label">Buscar</div></div>
+      <div class="nav-item" onclick="go('s-doses')"><div class="nav-icon">💊</div><div class="nav-label">Dosis</div></div>
+      <div class="nav-item active"><div class="nav-icon">🪞</div><div class="nav-label">Espejo</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 10. ELDERLY MODE ===== -->
+  <div class="screen elderly-screen" id="s-elderly">
+    <div class="elderly-header">
+      <div class="status-bar"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+      <button class="screen-back" onclick="go('s-roles')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 4 6 9 12 14"/></svg> Atrás
+      </button>
+      <div class="elderly-hello">Hola 👋</div>
+      <div class="elderly-name">Don Roberto</div>
+    </div>
+    <div class="elderly-content scroll-pad">
+      <div class="big-dose-card" id="elder-dose-1" onclick="elderlyConfirm('elder-dose-1')">
+        <div class="bdc-emoji">💊</div>
+        <div class="bdc-title">Metformina</div>
+        <div class="bdc-sub">1 pastilla con comida</div>
+        <div class="bdc-time">⏰ 2:00 PM</div>
+        <button class="bdc-btn" id="elder-btn-1">Ya me la tomé ✓</button>
+        <div class="bdc-done-text" id="elder-done-1">✅ ¡Muy bien! Registrado</div>
+      </div>
+      <div class="big-dose-card" id="elder-dose-2" onclick="elderlyConfirm('elder-dose-2')">
+        <div class="bdc-emoji">💊</div>
+        <div class="bdc-title">Losartán</div>
+        <div class="bdc-sub">1 pastilla</div>
+        <div class="bdc-time">⏰ 9:00 PM</div>
+        <button class="bdc-btn" id="elder-btn-2">Ya me la tomé ✓</button>
+        <div class="bdc-done-text" id="elder-done-2">✅ ¡Muy bien! Registrado</div>
+      </div>
+
+      <div class="elderly-help" onclick="toast('info','📞 Llamando a tu hijo Miguel...')">
+        <div class="elderly-help-icon">📞</div>
+        <div class="elderly-help-text">Llamar a Miguel (mi hijo)</div>
+      </div>
+      <div class="elderly-help" onclick="toast('info','🆘 Emergencia — llamando al 911...')">
+        <div class="elderly-help-icon">🆘</div>
+        <div class="elderly-help-text">Emergencia</div>
+      </div>
+      <div class="elderly-help" onclick="go('s-search')">
+        <div class="elderly-help-icon">🔍</div>
+        <div class="elderly-help-text">Buscar mi medicamento</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 11. PHARMACY DASHBOARD ===== -->
+  <div class="screen pharmacy-screen" id="s-pharmacy">
+    <div class="pharmacy-header">
+      <div class="status-bar light"><span>9:41</span><span>●●● ▐▐ ⚡</span></div>
+      <button class="screen-back light" onclick="go('s-roles')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 4 6 9 12 14"/></svg> Salir
+      </button>
+      <div class="pharmacy-name-h">Farmacia Guadalajara</div>
+      <div class="pharmacy-sub">Av. Revolución 1450 — Panel de farmacia aliada</div>
+    </div>
+    <div class="pharm-stats">
+      <div class="pharm-stat-card"><div class="psc-val">12</div><div class="psc-label">Reservas hoy</div></div>
+      <div class="pharm-stat-card"><div class="psc-val">847</div><div class="psc-label">Visitas desde FarmaGo</div></div>
+      <div class="pharm-stat-card"><div class="psc-val">98%</div><div class="psc-label">Stock actualizado</div></div>
+      <div class="pharm-stat-card"><div class="psc-val">4.8 ⭐</div><div class="psc-label">Calificación</div></div>
+    </div>
+
+    <div class="pharm-section"><div class="pharm-section-title">Reservas recientes</div></div>
+    <div style="padding:0 24px;">
+      <div class="order-card" onclick="toast('success','✅ Pedido #1247 marcado como listo')">
+        <div class="order-num new">#47</div>
+        <div class="order-info"><div class="order-med">Metformina 850mg x2</div><div class="order-detail">Miguel C. · Reservado hace 15 min</div></div>
+        <div class="order-status new">Nuevo</div>
+      </div>
+      <div class="order-card" onclick="toast('info','📦 Pedido #1246 — cliente en camino')">
+        <div class="order-num ready">#46</div>
+        <div class="order-info"><div class="order-med">Losartán 50mg</div><div class="order-detail">Ana R. · Listo para recoger</div></div>
+        <div class="order-status ready">Listo</div>
+      </div>
+      <div class="order-card" onclick="toast('info','📦 Pedido #1245 completado')">
+        <div class="order-num ready">#45</div>
+        <div class="order-info"><div class="order-med">Atorvastatina 20mg</div><div class="order-detail">Roberto C. · Entregado 10:30 AM</div></div>
+        <div class="order-status ready">Entregado</div>
+      </div>
+    </div>
+
+    <div class="pharm-section"><div class="pharm-section-title">Mi inventario</div></div>
+    <div style="padding:0 24px;" class="scroll-pad">
+      <div class="card">
+        <div class="stock-item" onclick="toast('info','Metformina — 124 unidades')"><div><div class="si-med">Metformina 850mg</div><div class="si-qty">124 unidades</div></div><div class="si-status ok">OK</div></div>
+        <div class="stock-item" onclick="toast('info','Losartán — 45 unidades')"><div><div class="si-med">Losartán 50mg</div><div class="si-qty">45 unidades</div></div><div class="si-status ok">OK</div></div>
+        <div class="stock-item" onclick="toast('info','Atorvastatina — 12 unidades')"><div><div class="si-med">Atorvastatina 20mg</div><div class="si-qty">12 unidades</div></div><div class="si-status low">Bajo</div></div>
+        <div class="stock-item" onclick="toast('info','Insulina Glargina — AGOTADO')"><div><div class="si-med">Insulina Glargina</div><div class="si-qty">0 unidades</div></div><div class="si-status crit">Agotado</div></div>
+      </div>
+      <button class="btn-primary" onclick="toast('success','📊 Reporte generado')" style="margin-top:14px;">📊 Generar reporte</button>
+      <button class="btn-outline" onclick="toast('info','📦 Actualizando inventario...')" style="margin-top:8px;">📦 Actualizar stock</button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item active"><div class="nav-icon">📊</div><div class="nav-label">Panel</div></div>
+      <div class="nav-item" onclick="toast('info','📦 Sección de pedidos')"><div class="nav-icon">📋</div><div class="nav-label">Pedidos</div></div>
+      <div class="nav-item" onclick="toast('info','📦 Sección de inventario')"><div class="nav-icon">📦</div><div class="nav-label">Stock</div></div>
+      <div class="nav-item" onclick="go('s-roles')"><div class="nav-icon">⚙️</div><div class="nav-label">Config</div></div>
+    </div>
+  </div>
+
+  <!-- ===== CONFIRM DOSE MODAL ===== -->
+  <div class="modal-overlay" id="modal-confirm" onclick="if(event.target===this)closeConfirm()">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-emoji">💊</div>
+      <div class="modal-title" id="mc-name">Metformina 850mg</div>
+      <div class="modal-sub" id="mc-time">Dosis programada: 2:00 PM</div>
+      <div class="modal-btn-row">
+        <button class="btn-primary" style="background:var(--green);" onclick="confirmDose()">✓ Ya me la tomé</button>
+        <button class="btn-outline" onclick="closeConfirm()">Ahora no</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let cur = 's-roles';
+  let history = ['s-roles'];
+  let pendingDose = null;
+
+  function go(id) {
+    if (id === cur) return;
+    document.getElementById(cur).classList.remove('active');
+    document.getElementById(id).classList.add('active');
+    document.getElementById(id).scrollTop = 0;
+    history.push(id);
+    cur = id;
+  }
+
+  function goBack() {
+    if (history.length > 1) {
+      history.pop();
+      const prev = history[history.length - 1];
+      go(prev);
+      history.pop(); // remove duplicate from go()
+    } else {
+      go('s-roles');
+    }
+  }
+
+  // Toast
+  let toastTimer;
+  function toast(type, msg) {
+    const t = document.getElementById('toast');
+    t.className = 'toast ' + type;
+    t.textContent = msg;
+    setTimeout(() => t.classList.add('show'), 10);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // Filters
+  function filterClick(el) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    toast('info', '🔄 Filtro: ' + el.textContent);
+  }
+
+  // Date strip
+  function dateClick(el) {
+    document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Dose confirm modal
+  function openConfirm(doseId, name, time) {
+    pendingDose = doseId;
+    document.getElementById('mc-name').textContent = name;
+    document.getElementById('mc-time').textContent = 'Dosis programada: ' + time;
+    document.getElementById('modal-confirm').classList.add('show');
+  }
+  function closeConfirm() {
+    document.getElementById('modal-confirm').classList.remove('show');
+    pendingDose = null;
+  }
+  function confirmDose() {
+    if (!pendingDose) return;
+    const card = document.getElementById(pendingDose);
+    card.classList.add('confirmed');
+    card.querySelector('.dose-btn').className = 'dose-btn taken';
+    card.querySelector('.dose-btn').textContent = '✓ Tomada';
+    card.querySelector('.dose-bar').className = 'dose-bar taken';
+    card.onclick = function() { toast('info','✓ Esta dosis ya fue confirmada'); };
+    closeConfirm();
+    toast('success', '✅ ¡Dosis confirmada!');
+  }
+
+  // Elderly confirm
+  function elderlyConfirm(cardId) {
+    const card = document.getElementById(cardId);
+    if (card.classList.contains('done')) {
+      toast('info', '✓ Ya confirmaste esta dosis');
+      return;
+    }
+    card.classList.add('done');
+    const num = cardId.split('-')[2];
+    document.getElementById('elder-btn-' + num).classList.add('disabled');
+    document.getElementById('elder-btn-' + num).textContent = 'Registrado ✓';
+    document.getElementById('elder-done-' + num).style.display = 'block';
+    toast('success', '✅ ¡Muy bien, Don Roberto! Dosis registrada');
+  }
+</script>
+
+</body>
+</html>

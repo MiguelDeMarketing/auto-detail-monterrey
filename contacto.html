@@ -33,7 +33,7 @@
       --input-border: #2A2A2A;
       --font-heading: 'Outfit', sans-serif;
       --font-body: 'Space Grotesk', sans-serif;
-      --max-width: 1200px;
+      --max-width: 1280px;
       --header-height: 80px;
       --transition: 0.3s ease;
     }
@@ -52,7 +52,7 @@
     img { max-width: 100%; display: block; }
     button, input, textarea, select { font-family: inherit; }
 
-    .container { width: 90%; max-width: var(--max-width); margin: 0 auto; }
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 3rem); }
 
     /* ===== Animations ===== */
     @keyframes fadeInUp {

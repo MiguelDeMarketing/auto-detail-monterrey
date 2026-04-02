@@ -155,14 +155,23 @@
     .btn-primary {
       background: var(--red);
       color: var(--white);
-      clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
       padding-right: 2.5rem;
     }
     .btn-primary:hover {
-      background: #e03535;
-      transform: translateX(4px);
-      box-shadow: 0 0 30px var(--red-glow);
+      background: #b82828;
+      transform: translateY(-2px);
     }
+    .header__cta .btn.btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px; background: #D43030; color: #fff;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+      letter-spacing: 0.5px; text-transform: uppercase; border-radius: 0;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+      transition: 0.3s ease; border: none; cursor: pointer; text-decoration: none;
+      box-shadow: none;
+    }
+    .header__cta .btn.btn-primary:hover { background: #b82828; transform: translateY(-2px); }
     .btn-outline {
       background: transparent;
       color: var(--white);

@@ -376,16 +376,22 @@
       inset: -20px;
       background-size: cover;
       background-position: center;
+      background-attachment: fixed;
       transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       will-change: transform;
     }
+    @media (max-width: 768px) {
+      .hero__half-bg { background-attachment: scroll; }
+    }
     .hero__half--left .hero__half-bg {
       background-color: #0d0d0d;
-      background-image: url(''); /* ← PLACEHOLDER: imagen estética vehicular */
+      background-image: url('assets/images/taller-mclaren.jpg');
+      background-position: center 65%;
     }
     .hero__half--right .hero__half-bg {
       background-color: #151515;
-      background-image: url(''); /* ← PLACEHOLDER: imagen off-road / 4x4 */
+      background-image: url('assets/images/4x4-ram-trx-frontal.jpg');
+      background-position: center 55%;
     }
     .hero__half:hover .hero__half-bg {
       transform: scale(1.06);
@@ -1684,7 +1690,7 @@
           <h3 class="services__side-title">Estética<br>Premium</h3>
           <a href="/ppf.html" class="btn btn-primary" style="font-size:0.75rem; padding:0.7rem 1.75rem;">Conocer Más</a>
           <div class="services__side-img">
-            <img src="assets/images/taller-mclaren.jpg" alt="McLaren negro en Auto Detail Monterrey">
+            <img src="assets/images/taller-mclaren.jpg" alt="McLaren negro en Auto Detail Monterrey" style="object-position:center 65%;">
           </div>
         </div>
 
@@ -1696,7 +1702,7 @@
           </div>
           <div class="services__center-bar"></div>
           <div class="services__center-car">
-            <img src="assets/images/wrap-mustang-rojo.jpg" alt="Mustang rojo con wrap en Auto Detail Monterrey" style="width:100%;height:auto;object-fit:cover;">
+            <img src="assets/images/wrap-mustang-rojo.jpg" alt="Mustang rojo con wrap en Auto Detail Monterrey" style="width:100%;height:100%;object-fit:cover;object-position:center 70%;">
             <div class="services__center-cta">
               <a href="/contacto.html" class="btn">
                 Contáctanos
@@ -1715,7 +1721,7 @@
           <h3 class="services__side-title">Accesorios<br>4X4</h3>
           <a href="/accesorios-4x4.html" class="btn btn-primary" style="font-size:0.75rem; padding:0.7rem 1.75rem;">Conocer Más</a>
           <div class="services__side-img">
-            <img src="assets/images/4x4-ram-trx-frontal.jpg" alt="RAM TRX blanca con accesorios 4x4">
+            <img src="assets/images/4x4-ram-trx-frontal.jpg" alt="RAM TRX blanca con accesorios 4x4" style="object-position:center 55%;">
           </div>
         </div>
       </div>
@@ -1726,7 +1732,7 @@
   <section class="why-us">
     <div class="container">
       <div class="why-us__image reveal-left">
-        <img src="assets/images/taller-maserati-mc20.jpg" alt="Maserati MC20 en taller Auto Detail Monterrey" style="width:100%;height:100%;object-fit:cover;">
+        <img src="assets/images/taller-maserati-mc20.jpg" alt="Maserati MC20 en taller Auto Detail Monterrey" style="width:100%;height:100%;object-fit:cover;object-position:center 70%;">
       </div>
       <div class="why-us__content reveal-right">
         <div class="section-label">Auto Detail Monterrey</div>
@@ -1812,30 +1818,30 @@
       <div class="gallery__grid">
         <!-- Row 1 -->
         <div class="gallery__item gallery__item--span-row reveal-scale" data-label="Recubrimiento Cerámico">
-          <img src="assets/images/taller-tesla-model3.jpg" alt="Tesla Model 3 con recubrimiento cerámico">
+          <img src="assets/images/taller-tesla-model3.jpg" alt="Tesla Model 3 con recubrimiento cerámico" style="object-position:center 60%;">
         </div>
         <div class="gallery__item gallery__item--span2 reveal-scale delay-1" data-label="Wrap Premium">
-          <img src="assets/images/wrap-bmw-m240i-azul.jpg" alt="BMW M240i con wrap azul mate">
+          <img src="assets/images/wrap-bmw-m240i-azul.jpg" alt="BMW M240i con wrap azul mate" style="object-position:center 55%;">
         </div>
         <div class="gallery__item reveal-scale delay-2" data-label="PPF XPEL">
-          <img src="assets/images/ppf-instalacion-xpel.jpg" alt="Instalación PPF XPEL">
+          <img src="assets/images/ppf-instalacion-xpel.jpg" alt="Instalación PPF XPEL" style="object-position:center center;">
         </div>
         <!-- Row 2 -->
         <div class="gallery__item reveal-scale delay-1" data-label="Maserati MC20">
-          <img src="assets/images/taller-maserati-mc20-puertas.jpg" alt="Maserati MC20 en Auto Detail Monterrey">
+          <img src="assets/images/taller-maserati-mc20-puertas.jpg" alt="Maserati MC20 en Auto Detail Monterrey" style="object-position:center 60%;">
         </div>
         <div class="gallery__item reveal-scale delay-2" data-label="Showroom">
           <video src="assets/videos/video-08.mp4" autoplay muted loop playsinline></video>
         </div>
         <!-- Row 3 -->
         <div class="gallery__item gallery__item--span2 reveal-scale delay-2" data-label="Accesorios 4×4 & Off-Road">
-          <img src="assets/images/4x4-jac-bullbar.jpg" alt="JAC con accesorios 4x4 XPEL">
+          <img src="assets/images/4x4-jac-bullbar.jpg" alt="JAC con accesorios 4x4 XPEL" style="object-position:center 60%;">
         </div>
         <div class="gallery__item reveal-scale delay-3" data-label="Porsche Cayman">
-          <img src="assets/images/taller-porsche-cayman.jpg" alt="Porsche Cayman en Auto Detail Monterrey">
+          <img src="assets/images/taller-porsche-cayman.jpg" alt="Porsche Cayman en Auto Detail Monterrey" style="object-position:center 65%;">
         </div>
         <div class="gallery__item reveal-scale delay-3" data-label="Land Rover Defender">
-          <img src="assets/images/taller-defender.jpg" alt="Land Rover Defender en Auto Detail Monterrey">
+          <img src="assets/images/taller-defender.jpg" alt="Land Rover Defender en Auto Detail Monterrey" style="object-position:center 55%;">
         </div>
       </div>
     </div>

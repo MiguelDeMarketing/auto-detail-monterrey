@@ -575,25 +575,140 @@
       font-size: 0.85rem;
     }
 
+    /* ── Mobile hero: hide desktop, show mobile ── */
+    .hero-mobile { display: none; }
+
     @media (max-width: 768px) {
-      .hero { min-height: 100svh; }
-      .hero__half--left {
-        clip-path: polygon(0 0, 100% 0, 100% 52%, 0 48%);
+      .hero { display: none; }
+      .hero-mobile {
+        display: block;
+        background: var(--black);
+        padding-top: 70px;
       }
-      .hero__half--right {
-        clip-path: polygon(0 48%, 100% 52%, 100% 100%, 0 100%);
+      .hero-mobile__card {
+        position: relative;
+        height: 45svh;
+        min-height: 260px;
+        overflow: hidden;
       }
-      .hero__divider svg line {
-        /* Override to horizontal: left-48% to right-52% */
+      .hero-mobile__card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
-      .hero__half-content { padding: 1.5rem; }
-      .hero__half--right .hero__half-content {
-        align-items: flex-start;
-        text-align: left;
+      .hero-mobile__card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.35) 100%);
       }
-      .hero__half--right .hero__half-services { justify-content: flex-start; }
-      .hero__half--right .hero__half-subtitle { margin-left: 0; }
-      .hero__center { display: none; }
+      .hero-mobile__card-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1.5rem;
+        z-index: 2;
+      }
+      .hero-mobile__label {
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--red);
+        margin-bottom: 0.5rem;
+      }
+      .hero-mobile__card-title {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 1.5rem;
+        line-height: 1.1;
+        margin-bottom: 0.6rem;
+      }
+      .hero-mobile__services {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+      }
+      .hero-mobile__svc {
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: rgba(255,255,255,0.6);
+        padding: 4px 10px;
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 20px;
+      }
+      .hero-mobile__btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 22px;
+        background: var(--red);
+        color: var(--white);
+        font-family: var(--font-display);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        border-radius: 4px;
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+      }
+      .hero-mobile__divider {
+        height: 3px;
+        background: var(--red);
+        box-shadow: 0 0 12px rgba(212,48,48,0.4);
+      }
+      .hero-mobile__center {
+        text-align: center;
+        padding: 2rem 1.5rem;
+        background: var(--black);
+      }
+      .hero-mobile__eyebrow {
+        font-size: 0.65rem;
+        font-weight: 500;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--red);
+        margin-bottom: 0.75rem;
+      }
+      .hero-mobile__title {
+        font-family: var(--font-display);
+        font-size: 1.75rem;
+        font-weight: 900;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.75rem;
+      }
+      .hero-mobile__title em {
+        font-style: normal;
+        color: var(--red);
+      }
+      .hero-mobile__desc {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.5);
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+      }
+      .hero-mobile__actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      .hero-mobile__actions .btn { width: 100%; max-width: 280px; justify-content: center; }
+      .hero-mobile__trust {
+        display: flex;
+        justify-content: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+        padding: 1rem 1.5rem;
+        background: rgba(255,255,255,0.03);
+        border-top: 1px solid rgba(255,255,255,0.06);
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.4);
+      }
+      .hero-mobile__trust span { display: flex; align-items: center; gap: 4px; }
     }
 
     /* ══════════════════════════════════════
@@ -1633,6 +1748,66 @@
         <span class="hero__trust-item"><span>🛡️</span> Doble garantía</span>
         <span class="hero__trust-item"><span>📍</span> San Pedro, NL</span>
       </div>
+    </div>
+  </section>
+
+  <!-- ════════════ HERO MOBILE ════════════ -->
+  <section class="hero-mobile">
+    <!-- Card 1: Estética -->
+    <div class="hero-mobile__card">
+      <img src="assets/images/taller-mclaren.jpg" alt="McLaren negro en Auto Detail Monterrey" style="object-position:center 65%;">
+      <div class="hero-mobile__card-content">
+        <div class="hero-mobile__label">Nuestros Servicios</div>
+        <h2 class="hero-mobile__card-title">Protección<br>de Pintura</h2>
+        <div class="hero-mobile__services">
+          <span class="hero-mobile__svc">PPF</span>
+          <span class="hero-mobile__svc">Cerámica</span>
+          <span class="hero-mobile__svc">Wraps</span>
+          <span class="hero-mobile__svc">Polarizado</span>
+        </div>
+        <a href="/ppf.html" class="hero-mobile__btn">Conocer Más</a>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="hero-mobile__divider"></div>
+
+    <!-- Center content -->
+    <div class="hero-mobile__center">
+      <p class="hero-mobile__eyebrow">Para vehículos de alto valor en Monterrey</p>
+      <h1 class="hero-mobile__title">Protección y <em>Personalización</em> de Alto Nivel.</h1>
+      <p class="hero-mobile__desc">Franquicia internacional. Los únicos en Monterrey que combinan protección de pintura con accesorios 4×4 certificados.</p>
+      <div class="hero-mobile__actions">
+        <a href="/contacto.html" class="btn btn-primary">Cotizar por WhatsApp</a>
+        <a href="#galeria" class="btn btn-outline">Ver Trabajos</a>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="hero-mobile__divider"></div>
+
+    <!-- Card 2: Off-Road -->
+    <div class="hero-mobile__card">
+      <img src="assets/images/4x4-ram-trx-frontal.jpg" alt="RAM TRX con accesorios 4x4" style="object-position:center 50%;">
+      <div class="hero-mobile__card-content">
+        <div class="hero-mobile__label">Nuestros Servicios</div>
+        <h2 class="hero-mobile__card-title">Accesorios<br>Off-Road</h2>
+        <div class="hero-mobile__services">
+          <span class="hero-mobile__svc">Burreras</span>
+          <span class="hero-mobile__svc">Estribos</span>
+          <span class="hero-mobile__svc">Roll Bar</span>
+          <span class="hero-mobile__svc">Faros LED</span>
+        </div>
+        <a href="/accesorios-4x4.html" class="hero-mobile__btn">Conocer Más</a>
+      </div>
+    </div>
+
+    <!-- Trust bar -->
+    <div class="hero-mobile__trust">
+      <span>⭐ 4.9 Google</span>
+      <span>🏆 +1,000 servicios</span>
+      <span>🛡️ Doble garantía</span>
+      <span>📍 San Pedro, NL</span>
     </div>
   </section>
 

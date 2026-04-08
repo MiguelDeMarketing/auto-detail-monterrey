@@ -1630,6 +1630,164 @@
       height: 28px;
       fill: var(--white);
     }
+
+    /* ══════════════════════════════════════
+       THEME TOGGLE BUTTON
+    ══════════════════════════════════════ */
+    .theme-toggle {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover {
+      border-color: var(--red);
+      background: rgba(212,48,48,0.08);
+    }
+    .theme-toggle svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.4s ease;
+    }
+    .theme-toggle:hover svg { transform: rotate(30deg); }
+    /* Show/hide icons based on theme */
+    .theme-toggle .icon-moon { display: block; stroke: #fff; fill: none; stroke-width: 2; }
+    .theme-toggle .icon-sun  { display: none;  stroke: #111; fill: none; stroke-width: 2; }
+
+    /* ══════════════════════════════════════
+       LIGHT THEME OVERRIDES
+    ══════════════════════════════════════ */
+    [data-theme="light"] .theme-toggle {
+      border-color: rgba(0,0,0,0.15);
+    }
+    [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+    [data-theme="light"] .theme-toggle .icon-sun  { display: block; }
+
+    /* Body */
+    [data-theme="light"] body {
+      background: #ffffff;
+      color: #111111;
+    }
+
+    /* Header */
+    [data-theme="light"] .header.scrolled {
+      background: rgba(255,255,255,0.95);
+      border-bottom-color: rgba(0,0,0,0.08);
+    }
+    [data-theme="light"] .header__logo { color: #111; }
+    [data-theme="light"] .header__nav a { color: rgba(0,0,0,0.7); }
+    [data-theme="light"] .header__nav a:hover { color: #111; }
+    [data-theme="light"] .header__hamburger span { background: #111; }
+    @media (max-width: 768px) {
+      [data-theme="light"] .header__nav.open {
+        background: rgba(255,255,255,0.97);
+        border-bottom-color: rgba(0,0,0,0.08);
+      }
+    }
+
+    /* Hero */
+    [data-theme="light"] .hero { background: #f5f5f5; }
+    [data-theme="light"] .hero__half-overlay { background: rgba(0,0,0,0.35); }
+    [data-theme="light"] .hero__trust {
+      background: rgba(255,255,255,0.85);
+      border-top-color: rgba(0,0,0,0.08);
+    }
+    [data-theme="light"] .hero__trust-item { color: rgba(0,0,0,0.5); }
+
+    /* Hero Mobile */
+    [data-theme="light"] .hero-mobile { background: #f5f5f5; }
+    [data-theme="light"] .hero-mobile__center { background: #ffffff; }
+    [data-theme="light"] .hero-mobile__desc { color: rgba(0,0,0,0.5); }
+    [data-theme="light"] .hero-mobile__svc { color: rgba(0,0,0,0.6); border-color: rgba(0,0,0,0.12); }
+    [data-theme="light"] .hero-mobile__trust {
+      background: rgba(0,0,0,0.03);
+      border-top-color: rgba(0,0,0,0.06);
+      color: rgba(0,0,0,0.45);
+    }
+    [data-theme="light"] .btn-outline {
+      color: #333;
+      border-color: rgba(0,0,0,0.25);
+    }
+    [data-theme="light"] .btn-outline:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* Why Us */
+    [data-theme="light"] .why-us { background: #f5f5f5; }
+    [data-theme="light"] .why-us__text { color: rgba(0,0,0,0.6); }
+    [data-theme="light"] .why-us__text strong { color: #111; }
+    [data-theme="light"] .why-us__feature {
+      background: rgba(0,0,0,0.03);
+      border-left-color: var(--red);
+    }
+    [data-theme="light"] .why-us__feature:hover { background: rgba(0,0,0,0.06); }
+    [data-theme="light"] .why-us__feature-text { color: #111; }
+    [data-theme="light"] .why-us .section-title { color: #111; }
+
+    /* Standards */
+    [data-theme="light"] .standards { background: #ffffff; }
+    [data-theme="light"] .standards__text { color: rgba(0,0,0,0.6); }
+    [data-theme="light"] .standards__text strong { color: #111; }
+    [data-theme="light"] .standards .section-title { color: #111; }
+    [data-theme="light"] .stat { border-top-color: rgba(0,0,0,0.1); }
+    [data-theme="light"] .stat__label { color: rgba(0,0,0,0.45); }
+    [data-theme="light"] .standards__img-placeholder {
+      background: linear-gradient(135deg, #e5e5e5, #f0f0f0);
+      border-color: rgba(0,0,0,0.08);
+    }
+
+    /* Gallery */
+    [data-theme="light"] .gallery { background: #f5f5f5; }
+    [data-theme="light"] .gallery .section-title { color: #111; }
+    [data-theme="light"] .gallery__item { background: #e5e5e5; }
+
+    /* Testimonials */
+    [data-theme="light"] .testimonials { background: #ffffff; }
+    [data-theme="light"] .testimonials .section-title { color: #111; }
+    [data-theme="light"] .testimonial {
+      background: rgba(0,0,0,0.02);
+      border-color: rgba(0,0,0,0.08);
+    }
+    [data-theme="light"] .testimonial:hover { border-color: rgba(212,48,48,0.3); }
+    [data-theme="light"] .testimonial__text { color: rgba(0,0,0,0.7); }
+    [data-theme="light"] .testimonial__text strong { color: #111; }
+    [data-theme="light"] .testimonial__author { border-top-color: rgba(0,0,0,0.08); }
+    [data-theme="light"] .testimonial__avatar { background: #e5e5e5; color: #666; }
+    [data-theme="light"] .testimonial__name { color: #111; }
+    [data-theme="light"] .testimonial__service { color: #666; }
+
+    /* FAQ */
+    [data-theme="light"] .faq { background: #f5f5f5; }
+    [data-theme="light"] .faq .section-title { color: #111; }
+    [data-theme="light"] .faq__intro { color: rgba(0,0,0,0.6); }
+    [data-theme="light"] .faq-item { border-bottom-color: rgba(0,0,0,0.1); }
+    [data-theme="light"] .faq-item__question { color: #111; }
+    [data-theme="light"] .faq-item__toggle::before,
+    [data-theme="light"] .faq-item__toggle::after { background: #333; }
+    [data-theme="light"] .faq-item__answer p { color: rgba(0,0,0,0.6); }
+
+    /* Footer */
+    [data-theme="light"] .footer {
+      background: #111111;
+      border-top-color: rgba(255,255,255,0.05);
+    }
+    [data-theme="light"] .footer__col-title { color: #fff; }
+    [data-theme="light"] .footer .header__logo { color: #fff; }
+    [data-theme="light"] .footer__brand p { color: rgba(255,255,255,0.4); }
+    [data-theme="light"] .footer__links a { color: rgba(255,255,255,0.4); }
+    [data-theme="light"] .footer__links a:hover { color: var(--red); }
+    [data-theme="light"] .footer__contact p { color: rgba(255,255,255,0.4); }
+    [data-theme="light"] .footer__bar { color: rgba(255,255,255,0.3); border-top-color: rgba(255,255,255,0.06); }
+
   </style>
 </head>
 <body>
@@ -1649,7 +1807,11 @@
         <a href="/accesorios-4x4.html">Accesorios 4×4</a>
         <a href="/nosotros.html">Nosotros</a>
       </nav>
-      <div class="header__cta">
+      <div class="header__cta" style="display:flex;align-items:center;">
+        <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+          <svg class="icon-moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
         <a href="/contacto.html" class="btn btn-primary">Contacto</a>
       </div>
       <button class="header__hamburger" id="hamburger" aria-label="Menú">
@@ -2277,6 +2439,22 @@
         if (!isActive) item.classList.add('active');
       });
     });
+
+    // Theme toggle (dark/light)
+    (function() {
+      const saved = localStorage.getItem('ad-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+
+      const toggle = document.getElementById('themeToggle');
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          const current = document.documentElement.getAttribute('data-theme');
+          const next = current === 'light' ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('ad-theme', next);
+        });
+      }
+    })();
   </script>
 </body>
 </html>

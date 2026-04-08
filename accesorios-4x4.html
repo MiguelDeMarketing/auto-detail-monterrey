@@ -736,12 +736,15 @@
 [data-theme="light"] .theme-toggle .icon-moon { display: none; }
 [data-theme="light"] .theme-toggle .icon-sun  { display: block; }
 [data-theme="light"] body { background: #ffffff; color: #111; }
-[data-theme="light"] .header.scrolled { background: rgba(255,255,255,0.95); border-bottom-color: rgba(0,0,0,0.08); }
-[data-theme="light"] .header__logo { color: #111; }
-[data-theme="light"] .header__nav a { color: rgba(0,0,0,0.7); }
-[data-theme="light"] .header__nav a:hover { color: #111; }
-[data-theme="light"] .header__hamburger span { background: #111; }
-[data-theme="light"] .header__nav a.active { color: #111; }
+/* Header stays white on this page — always over dark video */
+[data-theme="light"] .header.scrolled { background: rgba(0,0,0,0.85); border-bottom-color: rgba(255,255,255,0.08); }
+[data-theme="light"] .header__logo { color: #fff; }
+[data-theme="light"] .header__nav a { color: rgba(255,255,255,0.8); }
+[data-theme="light"] .header__nav a:hover { color: #fff; }
+[data-theme="light"] .header__hamburger span { background: #fff; }
+[data-theme="light"] .header__nav a.active { color: #fff; }
+[data-theme="light"] .theme-toggle { border-color: rgba(255,255,255,0.15); }
+[data-theme="light"] .theme-toggle .icon-sun { stroke: #fff; }
 @media (max-width: 768px) {
   [data-theme="light"] .header__nav.open { background: rgba(255,255,255,0.97); border-bottom-color: rgba(0,0,0,0.08); }
 }

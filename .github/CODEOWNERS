@@ -1,0 +1,9 @@
+# Skills, CLAUDE.md, y configuracion de Claude Code
+# Solo el admin (Miguel) puede aprobar cambios a estos archivos.
+# Los demas miembros del equipo pueden proponer cambios via PR,
+# pero necesitan la aprobacion de Miguel para que se integren.
+
+CLAUDE.md                    @MiguelDeMarketing
+.claude/skills/              @MiguelDeMarketing
+.claude/settings.json        @MiguelDeMarketing
+.github/CODEOWNERS           @MiguelDeMarketing

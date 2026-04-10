@@ -1,0 +1,44 @@
+#!/bin/bash
+# ============================================================
+# Pre-commit hook: protege skills, CLAUDE.md y config de Claude
+# Solo el admin puede modificar estos archivos.
+# Para marcarte como admin: git config --local claude.admin true
+# ============================================================
+
+# Check admin flag (set locally per repo, not shared)
+IS_ADMIN=$(git config --local claude.admin 2>/dev/null)
+
+# Archivos protegidos
+PROTECTED_PATHS="CLAUDE.md .claude/skills/ .claude/settings.json .github/CODEOWNERS"
+
+# Verificar si hay archivos protegidos en el staging area
+STAGED_FILES=$(git diff --cached --name-only)
+
+for protected in $PROTECTED_PATHS; do
+  MATCHES=$(echo "$STAGED_FILES" | grep "^${protected}" || true)
+  if [ -n "$MATCHES" ]; then
+    if [ "$IS_ADMIN" != "true" ]; then
+      echo ""
+      echo "============================================"
+      echo "  BLOQUEADO: No tienes permiso para"
+      echo "  modificar archivos protegidos."
+      echo "============================================"
+      echo ""
+      echo "  Archivos protegidos detectados:"
+      echo "$MATCHES" | sed 's/^/    - /'
+      echo ""
+      echo "  Solo el admin (Miguel) puede modificar:"
+      echo "    - CLAUDE.md"
+      echo "    - .claude/skills/"
+      echo "    - .claude/settings.json"
+      echo "    - .github/CODEOWNERS"
+      echo ""
+      echo "  Contacta a Miguel para solicitar cambios."
+      echo "============================================"
+      echo ""
+      exit 1
+    fi
+  fi
+done
+
+exit 0

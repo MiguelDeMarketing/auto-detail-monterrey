@@ -51,3 +51,4 @@ Todo lo que Claude genere (paginas, reportes, etc.) se guarda DENTRO de esta car
 
 ### Necesitas ayuda?
 - Si algo no funciona, contacta a Miguel (admin)
+
